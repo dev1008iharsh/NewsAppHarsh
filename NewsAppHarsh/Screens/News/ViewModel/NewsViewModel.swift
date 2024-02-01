@@ -6,26 +6,26 @@
 //
 
 import Foundation
- 
+
 final class NewsViewModel{
     
     var newsDataModel : NewsModel?
-   
+    
     var eventHandler : ((_ event : Event) -> Void)?
- 
+    
     func fetchNewsApi(){
         
         eventHandler?(.loading)
-
+        
         ApiManager.shared.request(modelType: NewsModel.self, type: NewsEndPointItem.news) { [ weak self ] response in
             
             guard let self else { return }
             
             eventHandler?(.stopLoading)
-             
+            
             switch response{
             case .success(let newsData):
-               
+                
                 self.newsDataModel = newsData
                 eventHandler?(.dataLoaded)
                 
@@ -47,5 +47,5 @@ extension NewsViewModel{
         case dataLoaded
         case network(Error?)
     }
-
+    
 }

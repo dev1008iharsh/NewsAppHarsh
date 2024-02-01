@@ -15,6 +15,21 @@ class Constant{
     
     let authKey = "467ec62e59864e5ab75a84be5287afee"
     
+    func convertDateFormat(from dateString: String, fromFormat: String, toFormat: String) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = fromFormat
+        
+        if let date = dateFormatter.date(from: dateString) {
+            dateFormatter.dateFormat = toFormat
+            let newDateString = dateFormatter.string(from: date)
+            return newDateString
+        } else {
+            // Handle invalid input date string
+            return nil
+        }
+    }
+    
+    
     func showLoader(_ show: Bool, loadingText : String = "") {
          
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {return }

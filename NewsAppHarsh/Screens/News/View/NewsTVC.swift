@@ -31,13 +31,21 @@ class NewsTVC: UITableViewCell {
     
     func configureNewsData(){
         
-        lblDateNews.text = article?.publishedAt
-        lblAuthorNews.text = article?.author ?? "Unknown Author"
+        
+        let outputDateString = Constant.shared.convertDateFormat(from: (article?.publishedAt ?? ""), fromFormat: "yyyy-MM-dd'T'HH:mm:ssZ", toFormat: "dd MMM, yyyy hh:mm a")
+        lblDateNews.text = outputDateString
+        
+        if let authorVal = article?.author,!(authorVal.isEmpty){
+            lblAuthorNews.text = authorVal
+        }else{
+            lblAuthorNews.text = "Unknown Author"
+        }
+        
         lblTitleNews.text = article?.title
         if let img = article?.urlToImage{
             imgNews.setImage(with: img)
         }
-       
+         
     }
 
     

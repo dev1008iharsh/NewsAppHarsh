@@ -9,7 +9,7 @@ import UIKit
 import WebKit
 
 class WebViewVC: UIViewController, WKNavigationDelegate {
-
+    
     @IBOutlet weak var webView: WKWebView!
     
     var strNewsUrl = ""
@@ -29,18 +29,18 @@ class WebViewVC: UIViewController, WKNavigationDelegate {
     }
     
     // WKNavigationDelegate method to handle page loading events
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            print("Page loaded successfully.")
-            DispatchQueue.main.async {
-                Constant.shared.showLoader(false)
-            }
-            // You can perform additional actions here when the page finishes loading.
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        //print("Page loaded successfully.")
+        DispatchQueue.main.async {
+            Constant.shared.showLoader(false)
         }
-
-        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            print("Failed to load page with error: \(error.localizedDescription)")
-            // Handle error if needed
-        }
-     
-
+        // You can perform additional actions here when the page finishes loading.
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        print("Failed to load page with error: \(error.localizedDescription)")
+        // Handle error if needed
+    }
+    
+    
 }

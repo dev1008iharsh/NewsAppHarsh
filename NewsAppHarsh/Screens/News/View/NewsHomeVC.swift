@@ -8,18 +8,17 @@
 import UIKit
 
 class NewsHomeVC: UIViewController {
-
+    
     @IBOutlet weak var tblNewsList: UITableView!
     
     
     //MARK: -  Properties
-   
+    
     private var news : NewsModel?
     private var viewModel = NewsViewModel()
-     
-    var marrArticles = [Articles]()
     
-   
+    var marrArticles = [Articles]()
+    var arrNewsCoreData = [ArticleOfflineCore]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,10 +30,9 @@ class NewsHomeVC: UIViewController {
         title = "Breaking News"
         
         configuration()
-        
+         
     }
     
- 
 }
 
 extension NewsHomeVC{
@@ -47,7 +45,34 @@ extension NewsHomeVC{
     }
     
     func initViewModel(){
-        viewModel.fetchNewsApi()
+        
+        
+        if NetworkReachability.shared.isNetworkAvailable() {
+            print("Network is available")
+            viewModel.fetchNewsApi()
+        } else {
+            print("Network is not available")
+            fetchOfflineDataFromCoreData()
+            DispatchQueue.main.async {
+                Constant.shared.showLoader(false)
+            }
+            
+            
+        }
+    }
+    func fetchOfflineDataFromCoreData(){
+        self.arrNewsCoreData = DBManager.shared.fetchCoreDataNews()
+        //print("arrNewsCoreData",self.arrNewsCoreData)
+        
+        for i in 0...self.arrNewsCoreData.count - 1{
+            
+            let arical = Articles(author: (self.arrNewsCoreData[i].author ?? ""), title: (self.arrNewsCoreData[i].title ?? ""), myDescription: (self.arrNewsCoreData[i].myDescription ?? ""), url: (self.arrNewsCoreData[i].url ?? ""), urlToImage: (self.arrNewsCoreData[i].urlToImage ?? ""), publishedAt: (self.arrNewsCoreData[i].publishedAt ?? ""), content: (self.arrNewsCoreData[i].content ?? ""))
+            
+            self.marrArticles.append(arical)
+            
+        }
+        
+        self.tblNewsList.reloadData()
     }
     
     func observeEvent(){
@@ -67,22 +92,29 @@ extension NewsHomeVC{
                 //print(viewModel.newsDataModel)
                 
                 if let articles = viewModel.newsDataModel?.articles{
-                    self.marrArticles = articles
+                    //self.marrArticles = articles
+                    
                     DispatchQueue.main.async {
-                        self.tblNewsList.reloadData()
+                        DBManager.shared.deleteAllData()
+                        
+                        DBManager.shared.saveNewsCoreData(articles)
+                        
+                        self.fetchOfflineDataFromCoreData()
+                        
+                        print("***dataLoaded marrArticles",self.marrArticles)
+                        
                     }
                     
                 }
             case .network(let error):
                 print(error ?? "Error at ObserEvnt")
-             
+                
             }
             
         }
     }
 }
-
-
+ 
 extension NewsHomeVC : UITableViewDataSource,UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return marrArticles.count
@@ -128,7 +160,7 @@ extension NewsHomeVC : UITableViewDataSource,UITableViewDelegate{
         self.navigationController?.pushViewController(nextVC, animated: true)
         
     }
-    
+      
 }
 
- 
+

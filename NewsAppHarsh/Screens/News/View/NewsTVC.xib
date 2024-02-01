@@ -26,7 +26,7 @@
                         <rect key="frame" x="10" y="8" width="348" height="170"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vr4-mz-lqF">
-                                <rect key="frame" x="10" y="12" width="146" height="146"/>
+                                <rect key="frame" x="12" y="12" width="146" height="146"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Vr4-mz-lqF" secondAttribute="height" multiplier="1:1" id="sqg-NM-yDI"/>
                                 </constraints>
@@ -37,19 +37,19 @@
                                 </userDefinedRuntimeAttributes>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="irZ-qz-apj">
-                                <rect key="frame" x="166" y="9.0000000000000018" width="172" height="21.666666666666671"/>
+                                <rect key="frame" x="168" y="13.000000000000002" width="170" height="21.666666666666671"/>
                                 <fontDescription key="fontDescription" name="GoogleSans-Medium" family="Google Sans" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="253" verticalHuggingPriority="253" horizontalCompressionResistancePriority="752" verticalCompressionResistancePriority="752" text="Author" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qxs-N7-Wdb">
-                                <rect key="frame" x="166" y="138" width="94.333333333333314" height="16.333333333333343"/>
+                                <rect key="frame" x="168" y="138" width="92.333333333333314" height="16.333333333333343"/>
                                 <fontDescription key="fontDescription" name="ArialRoundedMTBold" family="Arial Rounded MT Bold" pointSize="14"/>
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="252" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Date" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fXW-sa-2fB">
-                                <rect key="frame" x="166" y="110.33333333333333" width="172" height="15.666666666666671"/>
+                                <rect key="frame" x="168" y="110.33333333333333" width="170" height="15.666666666666671"/>
                                 <fontDescription key="fontDescription" name="ArialMT" family="Arial" pointSize="14"/>
                                 <color key="textColor" systemColor="systemGray2Color"/>
                                 <nil key="highlightedColor"/>
@@ -76,7 +76,7 @@
                         <constraints>
                             <constraint firstItem="qxs-N7-Wdb" firstAttribute="leading" secondItem="irZ-qz-apj" secondAttribute="leading" id="1CY-iP-qeN"/>
                             <constraint firstItem="aWu-lz-ThX" firstAttribute="centerY" secondItem="qxs-N7-Wdb" secondAttribute="centerY" id="BbA-vw-ZXd"/>
-                            <constraint firstItem="Vr4-mz-lqF" firstAttribute="leading" secondItem="cXb-d0-cto" secondAttribute="leading" constant="10" id="Dv1-u1-z6f"/>
+                            <constraint firstItem="Vr4-mz-lqF" firstAttribute="leading" secondItem="cXb-d0-cto" secondAttribute="leading" constant="12" id="Dv1-u1-z6f"/>
                             <constraint firstItem="irZ-qz-apj" firstAttribute="leading" secondItem="Vr4-mz-lqF" secondAttribute="trailing" constant="10" id="HKI-0Q-gT9"/>
                             <constraint firstItem="aWu-lz-ThX" firstAttribute="top" secondItem="fXW-sa-2fB" secondAttribute="bottom" constant="7" id="N24-CD-m2x"/>
                             <constraint firstItem="fXW-sa-2fB" firstAttribute="top" relation="greaterThanOrEqual" secondItem="irZ-qz-apj" secondAttribute="bottom" constant="2" id="Ohf-ur-0a8"/>
@@ -88,7 +88,7 @@
                             <constraint firstItem="aWu-lz-ThX" firstAttribute="width" secondItem="cXb-d0-cto" secondAttribute="width" multiplier="0.2" id="j9s-45-pYe"/>
                             <constraint firstItem="aWu-lz-ThX" firstAttribute="leading" secondItem="qxs-N7-Wdb" secondAttribute="trailing" constant="8" id="mJS-bD-6zC"/>
                             <constraint firstItem="aWu-lz-ThX" firstAttribute="bottom" secondItem="Vr4-mz-lqF" secondAttribute="bottom" constant="1" id="mPT-Ee-Tzp"/>
-                            <constraint firstItem="irZ-qz-apj" firstAttribute="top" secondItem="Vr4-mz-lqF" secondAttribute="top" constant="-3" id="pkM-yo-7os"/>
+                            <constraint firstItem="irZ-qz-apj" firstAttribute="top" secondItem="Vr4-mz-lqF" secondAttribute="top" constant="1" id="pkM-yo-7os"/>
                             <constraint firstItem="aWu-lz-ThX" firstAttribute="trailing" secondItem="fXW-sa-2fB" secondAttribute="trailing" id="trZ-Nu-Icz"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>

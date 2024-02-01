@@ -8,7 +8,7 @@
 import UIKit
 
 class NewsDetailsVC: UIViewController {
-   
+    
     @IBOutlet weak var lblTitle: UILabel!
     @IBOutlet weak var imgNews: UIImageView!
     @IBOutlet weak var lblDate: UILabel!
@@ -22,12 +22,12 @@ class NewsDetailsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
-       
+        
+        
         let pictureTap = UITapGestureRecognizer(target: self, action: #selector(openImage))
         self.imgNews.isUserInteractionEnabled = true
         self.imgNews.addGestureRecognizer(pictureTap)
-       
+        
     }
     @objc func openImage(_ sender: UITapGestureRecognizer) {
         let imageInfo = HpdImageInfo(image: imgNews.image ?? UIImage(), imageMode: .aspectFit)
@@ -48,16 +48,25 @@ class NewsDetailsVC: UIViewController {
     
     func configureNewsData(){
         lblTitle.text = article?.title ?? ""
-        lblDesc.text = article?.description ?? ""
-        lblDate.text = article?.publishedAt ?? ""
-        lblAuthor.text = "Published By : \(article?.author ?? ("Unknown Author"))" 
+        lblDesc.text = article?.myDescription ?? ""
+        
+        let outputDateString = Constant.shared.convertDateFormat(from: (article?.publishedAt ?? ""), fromFormat: "yyyy-MM-dd'T'HH:mm:ssZ", toFormat: "dd MMM, yyyy hh:mm a")
+        
+        lblDate.text = "Published on : \(outputDateString ?? "")"
+        
+        if let authorVal = article?.author,!(authorVal.isEmpty){
+            lblAuthor.text = "Published By : \(authorVal)"
+        }else{
+            lblAuthor.text = "Unknown Author"
+        }
+         
         lblContent.text = article?.content ?? ""
         
         if let img = article?.urlToImage{
             imgNews.setImage(with: img)
         }
     }
-     
+    
     
     @IBAction func btnWebViewTapped(_ sender: UIButton) {
         
