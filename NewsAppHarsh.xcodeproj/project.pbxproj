@@ -26,12 +26,13 @@
 		048332C82B6A71F0008E329C /* GoogleSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 048332C52B6A71F0008E329C /* GoogleSans-Regular.ttf */; };
 		048332C92B6A71F0008E329C /* GoogleSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 048332C62B6A71F0008E329C /* GoogleSans-Medium.ttf */; };
 		048332CC2B6A783A008E329C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 048332CB2B6A783A008E329C /* Kingfisher */; };
-		048332CE2B6A7875008E329C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048332CD2B6A7875008E329C /* Extensions.swift */; };
 		04B8FAA52B6A9FFC00478717 /* WebViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B8FAA42B6A9FFC00478717 /* WebViewVC.swift */; };
 		04B8FAA72B6AA65600478717 /* NewsDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B8FAA62B6AA65600478717 /* NewsDetailsVC.swift */; };
 		04B8FAA92B6ACD9700478717 /* HpdImageViewerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B8FAA82B6ACD9700478717 /* HpdImageViewerController.swift */; };
 		04F0FB582B6B47B400F0533F /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0FB572B6B47B400F0533F /* DBManager.swift */; };
 		04F0FB5A2B6B576500F0533F /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0FB592B6B576500F0533F /* NetworkReachability.swift */; };
+		04F0FB5C2B6B6B2400F0533F /* UIImageView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0FB5B2B6B6B2400F0533F /* UIImageView+Extensions.swift */; };
+		04F0FB602B6B734B00F0533F /* HapticFeebacl+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0FB5F2B6B734B00F0533F /* HapticFeebacl+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,12 +56,13 @@
 		048332C42B6A71F0008E329C /* GoogleSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSans-Bold.ttf"; sourceTree = "<group>"; };
 		048332C52B6A71F0008E329C /* GoogleSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSans-Regular.ttf"; sourceTree = "<group>"; };
 		048332C62B6A71F0008E329C /* GoogleSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSans-Medium.ttf"; sourceTree = "<group>"; };
-		048332CD2B6A7875008E329C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		04B8FAA42B6A9FFC00478717 /* WebViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewVC.swift; sourceTree = "<group>"; };
 		04B8FAA62B6AA65600478717 /* NewsDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDetailsVC.swift; sourceTree = "<group>"; };
 		04B8FAA82B6ACD9700478717 /* HpdImageViewerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HpdImageViewerController.swift; sourceTree = "<group>"; };
 		04F0FB572B6B47B400F0533F /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
 		04F0FB592B6B576500F0533F /* NetworkReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
+		04F0FB5B2B6B6B2400F0533F /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
+		04F0FB5F2B6B734B00F0533F /* HapticFeebacl+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HapticFeebacl+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,9 +122,9 @@
 		048332A12B6A5422008E329C /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				04B8FAA32B6A9FDF00478717 /* WebView */,
 				048332A82B6A5460008E329C /* News */,
 				048332A92B6A5469008E329C /* NewsDetails */,
+				04B8FAA32B6A9FDF00478717 /* WebView */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -149,8 +151,9 @@
 		048332A42B6A5429008E329C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				048332CD2B6A7875008E329C /* Extensions.swift */,
 				04B8FAA82B6ACD9700478717 /* HpdImageViewerController.swift */,
+				04F0FB5B2B6B6B2400F0533F /* UIImageView+Extensions.swift */,
+				04F0FB5F2B6B734B00F0533F /* HapticFeebacl+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -333,9 +336,10 @@
 				048332B42B6A55FA008E329C /* ApiManager.swift in Sources */,
 				048332AE2B6A5499008E329C /* EndPointType.swift in Sources */,
 				048332382B6A5267008E329C /* SceneDelegate.swift in Sources */,
-				048332CE2B6A7875008E329C /* Extensions.swift in Sources */,
+				04F0FB602B6B734B00F0533F /* HapticFeebacl+Extension.swift in Sources */,
 				048332BD2B6A5FB0008E329C /* NewsViewModel.swift in Sources */,
 				04F0FB582B6B47B400F0533F /* DBManager.swift in Sources */,
+				04F0FB5C2B6B6B2400F0533F /* UIImageView+Extensions.swift in Sources */,
 				048332B22B6A54D9008E329C /* Constant.swift in Sources */,
 				048332C02B6A6FEB008E329C /* NewsTVC.swift in Sources */,
 				04F0FB5A2B6B576500F0533F /* NetworkReachability.swift in Sources */,

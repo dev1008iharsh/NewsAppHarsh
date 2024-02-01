@@ -9,6 +9,7 @@ import UIKit
 
 class NewsTVC: UITableViewCell {
 
+    //MARK: -  @IBOutlet
     @IBOutlet weak var btnWeb: UIButton!
     @IBOutlet weak var lblDateNews: UILabel!
     @IBOutlet weak var lblAuthorNews: UILabel!
@@ -16,22 +17,27 @@ class NewsTVC: UITableViewCell {
     @IBOutlet weak var imgNews: UIImageView!
     @IBOutlet weak var bgView: UIView!
     
-    
+    //MARK: -  Properties
     var article : Articles?{
         didSet{
             configureNewsData()
         }
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
+    //MARK: -  LifeCycle
+    override func prepareForReuse() {
+        super.prepareForReuse()
+       
+        lblDateNews.text = nil
+        lblAuthorNews.text = nil
+        lblTitleNews.text = nil
+        imgNews.image = nil
+      
     }
     
-    
+    //MARK: -  SetUp Screen
     func configureNewsData(){
-        
-        
+         
         let outputDateString = Constant.shared.convertDateFormat(from: (article?.publishedAt ?? ""), fromFormat: "yyyy-MM-dd'T'HH:mm:ssZ", toFormat: "dd MMM, yyyy hh:mm a")
         lblDateNews.text = outputDateString
         
@@ -42,16 +48,13 @@ class NewsTVC: UITableViewCell {
         }
         
         lblTitleNews.text = article?.title
-        if let img = article?.urlToImage{
-            imgNews.setImage(with: img)
+        
+        if let imgVal = article?.urlToImage,!(imgVal.isEmpty){
+            imgNews.setImage(with: imgVal)
+        }else{
+            imgNews.image = UIImage(named: "placeholder")
         }
-         
+        
     }
-
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
- 
-    }
-    
+  
 }

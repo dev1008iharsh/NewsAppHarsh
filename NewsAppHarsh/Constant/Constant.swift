@@ -80,4 +80,20 @@ class Constant{
         return loadingView
     }
     
+    public func showAlertHandler(title:String, message: String, view:UIViewController,okAction:@escaping ((UIAlertAction) -> Void)) {
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: okAction))
+        view.present(alert, animated: true, completion: nil)
+    }
+    
+    func heavyHapticFeedBack(){
+        let feedbackGenerator = UIImpactFeedbackGenerator(style: .heavyImpact)
+        feedbackGenerator.impact()
+    }
+    func lightHapticFeedBack(){
+        let feedbackGenerator = UIImpactFeedbackGenerator(style: .lightImpact)
+        feedbackGenerator.impact()
+    }
+    
 }

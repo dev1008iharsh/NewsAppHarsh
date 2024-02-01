@@ -21,5 +21,11 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>GoogleSans-Bold.ttf</string>
+		<string>GoogleSans-Regular.ttf</string>
+		<string>GoogleSans-Medium.ttf</string>
+	</array>
 </dict>
 </plist>

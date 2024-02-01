@@ -8,7 +8,7 @@
 import UIKit
 
 class NewsHomeVC: UIViewController {
-    
+    //MARK: -  @IBOutlet
     @IBOutlet weak var tblNewsList: UITableView!
     
     
@@ -20,6 +20,7 @@ class NewsHomeVC: UIViewController {
     var marrArticles = [Articles]()
     var arrNewsCoreData = [ArticleOfflineCore]()
     
+    //MARK: -  ViewController LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -45,21 +46,49 @@ extension NewsHomeVC{
     }
     
     func initViewModel(){
-        
-        
+         
         if NetworkReachability.shared.isNetworkAvailable() {
             print("Network is available")
             viewModel.fetchNewsApi()
+            
         } else {
             print("Network is not available")
             fetchOfflineDataFromCoreData()
+            offlineMessage()
             DispatchQueue.main.async {
                 Constant.shared.showLoader(false)
             }
-            
-            
         }
     }
+    
+    func offlineMessage(){
+        // Create a view
+       
+        let viewWidth: CGFloat = 270
+        let myView = UIView(frame: CGRect(x: ((view.bounds.width - viewWidth) / 2), y: 150, width: viewWidth, height: 40))
+        myView.layer.cornerRadius = 20
+        myView.backgroundColor = .red
+        
+        
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: myView.bounds.width, height: myView.bounds.height))
+        label.text = "Oops! No Internet Connection"
+        label.textColor = .systemBackground
+        label.textAlignment = .center
+        
+        myView.addSubview(label)
+        self.view.addSubview(myView)
+        
+        
+        UIView.animate(withDuration: 2.0, delay: 2.0, options: .curveEaseOut, animations: {
+            myView.alpha = 0.0
+        }, completion: { finished in
+            
+            myView.removeFromSuperview()
+        })
+      
+        Constant.shared.heavyHapticFeedBack()
+    }
+    
     func fetchOfflineDataFromCoreData(){
         self.arrNewsCoreData = DBManager.shared.fetchCoreDataNews()
         //print("arrNewsCoreData",self.arrNewsCoreData)
@@ -75,6 +104,7 @@ extension NewsHomeVC{
         self.tblNewsList.reloadData()
     }
     
+    //MARK: -  API Response
     func observeEvent(){
         viewModel.eventHandler = { [weak self] event in
             guard let self else {return}
@@ -102,6 +132,8 @@ extension NewsHomeVC{
                         self.fetchOfflineDataFromCoreData()
                         
                         print("***dataLoaded marrArticles",self.marrArticles)
+                         
+                        Constant.shared.heavyHapticFeedBack()
                         
                     }
                     
@@ -113,8 +145,10 @@ extension NewsHomeVC{
             
         }
     }
+     
 }
- 
+
+//MARK: -  UITableViewDelegate, UITableViewDataSource
 extension NewsHomeVC : UITableViewDataSource,UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return marrArticles.count
@@ -138,13 +172,24 @@ extension NewsHomeVC : UITableViewDataSource,UITableViewDelegate{
     @objc func btnWebTapped(sender: UIButton) {
         
         // we can also use closure for navigation on click tap - here i use another method
-        
-        let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as! WebViewVC
-        
-        if let url = marrArticles[sender.tag].url{
-            nextVC.strNewsUrl = url
-            self.navigationController?.pushViewController(nextVC, animated: true)
+       
+        if NetworkReachability.shared.isNetworkAvailable() {
+            let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as! WebViewVC
+            
+            if let url = marrArticles[sender.tag].url{
+                
+                Constant.shared.lightHapticFeedBack()
+                
+                nextVC.strNewsUrl = url
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            }
+        } else {
+            Constant.shared.heavyHapticFeedBack()
+            Constant.shared.showAlertHandler(title: "Oops! It seems like you're offline", message: "Please check your internet connection and try again later.", view: self) { alert in
+                self.dismiss(animated: true)
+            }
         }
+        
         
     }
     
