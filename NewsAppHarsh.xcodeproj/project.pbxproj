@@ -26,6 +26,7 @@
 		048332C82B6A71F0008E329C /* GoogleSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 048332C52B6A71F0008E329C /* GoogleSans-Regular.ttf */; };
 		048332C92B6A71F0008E329C /* GoogleSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 048332C62B6A71F0008E329C /* GoogleSans-Medium.ttf */; };
 		048332CC2B6A783A008E329C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 048332CB2B6A783A008E329C /* Kingfisher */; };
+		04A71B9A2B7257D40002E398 /* UITableView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A71B992B7257D40002E398 /* UITableView+Extension.swift */; };
 		04B8FAA52B6A9FFC00478717 /* WebViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B8FAA42B6A9FFC00478717 /* WebViewVC.swift */; };
 		04B8FAA72B6AA65600478717 /* NewsDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B8FAA62B6AA65600478717 /* NewsDetailsVC.swift */; };
 		04B8FAA92B6ACD9700478717 /* HpdImageViewerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B8FAA82B6ACD9700478717 /* HpdImageViewerController.swift */; };
@@ -56,6 +57,7 @@
 		048332C42B6A71F0008E329C /* GoogleSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSans-Bold.ttf"; sourceTree = "<group>"; };
 		048332C52B6A71F0008E329C /* GoogleSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSans-Regular.ttf"; sourceTree = "<group>"; };
 		048332C62B6A71F0008E329C /* GoogleSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSans-Medium.ttf"; sourceTree = "<group>"; };
+		04A71B992B7257D40002E398 /* UITableView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableView+Extension.swift"; sourceTree = "<group>"; };
 		04B8FAA42B6A9FFC00478717 /* WebViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewVC.swift; sourceTree = "<group>"; };
 		04B8FAA62B6AA65600478717 /* NewsDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDetailsVC.swift; sourceTree = "<group>"; };
 		04B8FAA82B6ACD9700478717 /* HpdImageViewerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HpdImageViewerController.swift; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 				04B8FAA82B6ACD9700478717 /* HpdImageViewerController.swift */,
 				04F0FB5B2B6B6B2400F0533F /* UIImageView+Extensions.swift */,
 				04F0FB5F2B6B734B00F0533F /* HapticFeebacl+Extension.swift */,
+				04A71B992B7257D40002E398 /* UITableView+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 			files = (
 				048332402B6A5267008E329C /* NewsAppHarsh.xcdatamodeld in Sources */,
 				04B8FAA92B6ACD9700478717 /* HpdImageViewerController.swift in Sources */,
+				04A71B9A2B7257D40002E398 /* UITableView+Extension.swift in Sources */,
 				048332362B6A5267008E329C /* AppDelegate.swift in Sources */,
 				04B8FAA72B6AA65600478717 /* NewsDetailsVC.swift in Sources */,
 				048332B62B6A5A66008E329C /* NewsHomeVC.swift in Sources */,

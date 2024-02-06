@@ -10,14 +10,15 @@ import Foundation
 final class NewsViewModel{
     
     var newsDataModel : NewsModel?
+    var marrArticles = [Articles]()
     
     var eventHandler : ((_ event : Event) -> Void)?
     
-    func fetchNewsApi(){
+    func fetchNewsApi(page : Int){
         
         eventHandler?(.loading)
         
-        ApiManager.shared.request(modelType: NewsModel.self, type: NewsEndPointItem.news) { [ weak self ] response in
+        ApiManager.shared.request(modelType: NewsModel.self, type: NewsEndPointItem.news(page: page)) { [ weak self ] response in
             
             guard let self else { return }
             
@@ -25,8 +26,9 @@ final class NewsViewModel{
             
             switch response{
             case .success(let newsData):
-                
+               
                 self.newsDataModel = newsData
+                self.marrArticles = self.marrArticles + (newsData.articles ?? [])
                 eventHandler?(.dataLoaded)
                 
             case .failure(let error):

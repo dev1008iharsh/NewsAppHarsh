@@ -14,11 +14,17 @@ class NewsHomeVC: UIViewController {
     
     //MARK: -  Properties
     
+    var totalResultsCount = 0
+    var totalPage = 2
+    var currentPage = 1
+    
     private var news : NewsModel?
     private var viewModel = NewsViewModel()
+     
+    //var marrArticles = [Articles]()
+    //var arrNewsCoreData = [ArticleOfflineCore]()
     
-    var marrArticles = [Articles]()
-    var arrNewsCoreData = [ArticleOfflineCore]()
+    var refreshControl = UIRefreshControl()
     
     //MARK: -  ViewController LifeCycle
     override func viewDidLoad() {
@@ -40,7 +46,11 @@ extension NewsHomeVC{
     
     // this is work like viewDidLoad
     func configuration(){
+        
         tblNewsList.register(UINib(nibName: "NewsTVC", bundle: nil), forCellReuseIdentifier: "NewsTVC")
+        
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+         
         initViewModel()
         observeEvent()
     }
@@ -49,13 +59,15 @@ extension NewsHomeVC{
          
         if NetworkReachability.shared.isNetworkAvailable() {
             print("Network is available")
-            viewModel.fetchNewsApi()
+            tblNewsList.addSubview(refreshControl)
+            viewModel.fetchNewsApi(page: currentPage)
             
         } else {
             print("Network is not available")
-            fetchOfflineDataFromCoreData()
-            offlineMessage()
+            
             DispatchQueue.main.async {
+                self.fetchOfflineDataFromCoreData()
+                self.offlineMessage()
                 Constant.shared.showLoader(false)
             }
         }
@@ -79,7 +91,7 @@ extension NewsHomeVC{
         self.view.addSubview(myView)
         
         
-        UIView.animate(withDuration: 2.0, delay: 2.0, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 1.0, delay: 1.0, options: .curveEaseOut, animations: {
             myView.alpha = 0.0
         }, completion: { finished in
             
@@ -90,20 +102,24 @@ extension NewsHomeVC{
     }
     
     func fetchOfflineDataFromCoreData(){
-        self.arrNewsCoreData = DBManager.shared.fetchCoreDataNews()
+        var arrNewsCoreData = [ArticleOfflineCore]()
+        arrNewsCoreData = DBManager.shared.fetchCoreDataNews()
         //print("arrNewsCoreData",self.arrNewsCoreData)
-        
-        for i in 0...self.arrNewsCoreData.count - 1{
+        self.viewModel.marrArticles.removeAll()
+        for i in 0...arrNewsCoreData.count - 1{
             
-            let arical = Articles(author: (self.arrNewsCoreData[i].author ?? ""), title: (self.arrNewsCoreData[i].title ?? ""), myDescription: (self.arrNewsCoreData[i].myDescription ?? ""), url: (self.arrNewsCoreData[i].url ?? ""), urlToImage: (self.arrNewsCoreData[i].urlToImage ?? ""), publishedAt: (self.arrNewsCoreData[i].publishedAt ?? ""), content: (self.arrNewsCoreData[i].content ?? ""))
+            let arical = Articles(author: (arrNewsCoreData[i].author ?? ""), title: (arrNewsCoreData[i].title ?? ""), myDescription: (arrNewsCoreData[i].myDescription ?? ""), url: (arrNewsCoreData[i].url ?? ""), urlToImage: (arrNewsCoreData[i].urlToImage ?? ""), publishedAt: (arrNewsCoreData[i].publishedAt ?? ""), content: (arrNewsCoreData[i].content ?? ""))
             
-            self.marrArticles.append(arical)
+            self.viewModel.marrArticles.append(arical)
             
         }
         
         self.tblNewsList.reloadData()
     }
-    
+    func calculateTotalPages(totalResultCount: Int, resultsPerPage: Int) -> Int {
+        let totalPages = Int(ceil(Double(totalResultCount) / Double(resultsPerPage)))
+        return totalPages
+    }
     //MARK: -  API Response
     func observeEvent(){
         viewModel.eventHandler = { [weak self] event in
@@ -112,31 +128,29 @@ extension NewsHomeVC{
             switch event {
             case .loading:
                 print("data loading")
+                
             case .stopLoading:
                 print("loading finished")
                 DispatchQueue.main.async {
                     Constant.shared.showLoader(false)
+                    self.tblNewsList.stopLoading()
                 }
                 
             case .dataLoaded:
                 //print(viewModel.newsDataModel)
-                
-                if let articles = viewModel.newsDataModel?.articles{
-                    //self.marrArticles = articles
-                    
-                    DispatchQueue.main.async {
+                self.totalResultsCount = viewModel.newsDataModel?.totalResults ?? 1
+                let totalPages = calculateTotalPages(totalResultCount: self.totalResultsCount, resultsPerPage: 20)
+                self.totalPage = totalPages
+                print("Total Pages: \(totalPages)")
+                 
+            
+                DispatchQueue.main.async {
+                    if self.currentPage == 1{
                         DBManager.shared.deleteAllData()
-                        
-                        DBManager.shared.saveNewsCoreData(articles)
-                        
-                        self.fetchOfflineDataFromCoreData()
-                        
-                        print("***dataLoaded marrArticles",self.marrArticles)
-                         
-                        Constant.shared.heavyHapticFeedBack()
-                        
+                        DBManager.shared.saveNewsCoreData(self.viewModel.marrArticles)
                     }
-                    
+                    self.tblNewsList.reloadData()
+                    Constant.shared.heavyHapticFeedBack()
                 }
             case .network(let error):
                 print(error ?? "Error at ObserEvnt")
@@ -145,13 +159,20 @@ extension NewsHomeVC{
             
         }
     }
+    
+    @objc func refreshData() {
+        self.viewModel.marrArticles.removeAll()
+        self.viewModel.fetchNewsApi(page: 1)
+        self.tblNewsList.reloadData()
+        self.refreshControl.endRefreshing()
+    }
      
 }
 
 //MARK: -  UITableViewDelegate, UITableViewDataSource
 extension NewsHomeVC : UITableViewDataSource,UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return marrArticles.count
+        return viewModel.marrArticles.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -160,7 +181,7 @@ extension NewsHomeVC : UITableViewDataSource,UITableViewDelegate{
             return UITableViewCell()
         }
         
-        cell.article = marrArticles[indexPath.row]
+        cell.article = viewModel.marrArticles[indexPath.row]
         
         cell.btnWeb.addTarget(self, action: #selector(btnWebTapped(sender:)), for:.touchUpInside)
         cell.btnWeb.tag = indexPath.row
@@ -176,7 +197,7 @@ extension NewsHomeVC : UITableViewDataSource,UITableViewDelegate{
         if NetworkReachability.shared.isNetworkAvailable() {
             let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as! WebViewVC
             
-            if let url = marrArticles[sender.tag].url{
+            if let url = viewModel.marrArticles[sender.tag].url{
                 
                 Constant.shared.lightHapticFeedBack()
                 
@@ -200,12 +221,37 @@ extension NewsHomeVC : UITableViewDataSource,UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "NewsDetailsVC") as! NewsDetailsVC
         
-        nextVC.article = marrArticles[indexPath.row]
+        nextVC.article = viewModel.marrArticles[indexPath.row]
         
         self.navigationController?.pushViewController(nextVC, animated: true)
         
     }
       
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+       /*
+        if indexPath.row == self.viewModel.marrArticles.count - 1 && self.totalResultsCount > self.currentPage{
+            tableView.addLoading(indexPath) {
+            
+            self.currentPage = self.currentPage + 1
+            self.viewModel.fetchNewsApi(currentPage: self.currentPage)
+            
+            }
+        }*/
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            if tableView.visibleCells.contains(cell) {
+                if (indexPath.row == self.viewModel.marrArticles.count - 1) && (self.totalPage > self.currentPage){
+                    
+                    self.currentPage = self.currentPage + 1
+                    self.viewModel.fetchNewsApi(page: self.currentPage)
+                    
+                    tableView.addLoading(indexPath)
+                }
+            }
+        }
+      
+    }
+    
 }
 
 

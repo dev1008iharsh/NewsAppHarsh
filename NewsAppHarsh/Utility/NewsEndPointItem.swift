@@ -8,7 +8,7 @@
 import Foundation
 
 enum NewsEndPointItem {
-    case news // get news
+    case news(page : Int) // get news
 }
 
 //https://newsapi.org/v2/top-headlines?country=in&apiKey=467ec62e59864e5ab75a84be5287afee
@@ -36,6 +36,13 @@ extension NewsEndPointItem : EndPointType {
         
     }
      
+    var page: Int {
+        switch self{
+        case .news (let page):
+            return page
+        }
+    }
+    
     var baseUrl: String {
         // we can also firect return we have same url for whole project
         switch self{
@@ -46,7 +53,7 @@ extension NewsEndPointItem : EndPointType {
     }
     
     var url: URL? {
-        return URL(string: "\(baseUrl)\(path)")
+        return URL(string: "\(baseUrl)\(path)&page=\(page)")
     }
     
     var method: HttpMehtod {
