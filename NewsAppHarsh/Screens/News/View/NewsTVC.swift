@@ -27,18 +27,18 @@ class NewsTVC: UITableViewCell {
     //MARK: -  LifeCycle
     override func prepareForReuse() {
         super.prepareForReuse()
-       
-        lblDateNews.text = nil
-        lblAuthorNews.text = nil
-        lblTitleNews.text = nil
-        imgNews.image = nil
+        
+        self.lblDateNews.text = nil
+        self.lblAuthorNews.text = nil
+        self.lblTitleNews.text = nil
+        self.imgNews.image = nil
       
     }
     
     //MARK: -  SetUp Screen
     func configureNewsData(){
          
-        let outputDateString = Constant.shared.convertDateFormat(from: (article?.publishedAt ?? ""), fromFormat: "yyyy-MM-dd'T'HH:mm:ssZ", toFormat: "dd MMM, yyyy hh:mm a")
+        let outputDateString = Utility.shared.convertDateFormat(from: (article?.publishedAt ?? ""), fromFormat: "yyyy-MM-dd'T'HH:mm:ssZ", toFormat: "dd MMM, yyyy hh:mm a")
         lblDateNews.text = outputDateString
         
         if let authorVal = article?.author,!(authorVal.isEmpty){
@@ -50,7 +50,9 @@ class NewsTVC: UITableViewCell {
         lblTitleNews.text = article?.title
         
         if let imgVal = article?.urlToImage,!(imgVal.isEmpty){
-            imgNews.setImage(with: imgVal)
+            //imgNews.setImage(with: imgVal)
+            self.imgNews.downloadImage(fromURL: imgVal)
+             
         }else{
             imgNews.image = UIImage(named: "placeholder")
         }

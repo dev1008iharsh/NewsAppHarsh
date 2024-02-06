@@ -17,7 +17,7 @@ class WebViewVC: UIViewController, WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        Constant.shared.showLoader(true)
+        Utility.shared.showLoader(true)
         webView.navigationDelegate = self
         
         if let url = URL(string: strNewsUrl) {
@@ -31,9 +31,9 @@ class WebViewVC: UIViewController, WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         //print("Page loaded successfully.")
-        Constant.shared.heavyHapticFeedBack()
+        Utility.shared.heavyHapticFeedBack()
         DispatchQueue.main.async {
-            Constant.shared.showLoader(false)
+            Utility.shared.showLoader(false)
         }
         
     }
@@ -41,7 +41,7 @@ class WebViewVC: UIViewController, WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         print("Failed to load page with error: \(error.localizedDescription)")
         DispatchQueue.main.async {
-            Constant.shared.showLoader(false)
+            Utility.shared.showLoader(false)
         }
     }
     

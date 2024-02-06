@@ -10,7 +10,7 @@ import Foundation
 final class NewsViewModel{
     
     var newsDataModel : NewsModel?
-    var marrArticles = [Articles]()
+    var articles = [Articles]()
     
     var eventHandler : ((_ event : Event) -> Void)?
     
@@ -26,9 +26,9 @@ final class NewsViewModel{
             
             switch response{
             case .success(let newsData):
-               
+                
                 self.newsDataModel = newsData
-                self.marrArticles = self.marrArticles + (newsData.articles ?? [])
+                self.articles = (newsData.articles ?? [])
                 eventHandler?(.dataLoaded)
                 
             case .failure(let error):

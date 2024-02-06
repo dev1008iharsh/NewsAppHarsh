@@ -16,35 +16,53 @@ class DBManager{
         return (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     }
     
-    func saveNewsCoreData(_ newsModel: [Articles]) {
+    func saveNewsCoreData(newData: [Articles], completion: @escaping () -> Void) {
+        // Fetch existing data
+        var existingData = fetchCoreDataNews()
+        //print("existingData",existingData)
         
-        for index in 0..<newsModel.count {
-            let articalEntity = ArticleOfflineCore(context: context) // navo user create kare
-            articalEntity.author = newsModel[index].author
-            articalEntity.title = newsModel[index].title
-            articalEntity.myDescription = newsModel[index].myDescription
-            articalEntity.url = newsModel[index].url
-            articalEntity.urlToImage = newsModel[index].urlToImage
-            articalEntity.publishedAt = newsModel[index].publishedAt
-            articalEntity.content = newsModel[index].content
+        // Determine the starting index for the order
+        let startingIndex = existingData.count
+        
+        // Append new data to existing data
+        for (index, article) in newData.enumerated() {
+            let articalEntity = ArticleOfflineCore(context: context) // Create new instance
+            articalEntity.author = article.author
+            articalEntity.title = article.title
+            articalEntity.myDescription = article.myDescription
+            articalEntity.url = article.url
+            articalEntity.urlToImage = article.urlToImage
+            articalEntity.publishedAt = article.publishedAt
+            articalEntity.content = article.content
+            articalEntity.order = Int64(startingIndex + index) // Set the order
+            
+            existingData.append(articalEntity) // Append to existing data
         }
         
+        // Save the updated data
         saveContext()
+        
+        // Call completion handler
+        completion()
     }
-    
     
     func fetchCoreDataNews() -> [ArticleOfflineCore] {
-        var users: [ArticleOfflineCore] = []
+        let fetchRequest: NSFetchRequest<ArticleOfflineCore> = ArticleOfflineCore.fetchRequest()
+        
+        // Sort descriptor to fetch entities based on the order attribute
+        let sortDescriptor = NSSortDescriptor(key: "order", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
         
         do {
-            users = try context.fetch(ArticleOfflineCore.fetchRequest())
-            print("*** FETCHED CoreData Successfully")
-        }catch {
-            print("*** Fetch CoreDatauser error", error)
+            let existingData = try context.fetch(fetchRequest)
+            return existingData
+        } catch {
+            // Handle error here
+            print("Error fetching existing data: \(error.localizedDescription)")
+            return []
         }
-        
-        return users
     }
+    
     
     func saveContext() {
         do {

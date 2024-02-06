@@ -6,20 +6,24 @@
 //  https://github.com/dev1008iharsh?tab=repositories
 
 import Foundation
- 
+import UIKit
+
 enum DataError : Error {
     case invalidRepsonse
     case invalidURL
     case invalidData
     case network(Error?)
 }
- 
+
 typealias Handler<T> = (Result<T, DataError>) -> Void
 
 // singleton class
 class ApiManager{
     
     static let shared = ApiManager()
+    
+    let cache = NSCache<NSString, UIImage>()
+    
     private init(){}
     
     
@@ -70,10 +74,43 @@ class ApiManager{
     }
     
     
-     
     static var commanHeaders : [String : String]{
-        return ["Authorization" : "Bearer \(Constant.shared.authKey)"]
+        return ["Authorization" : "Bearer \(Constant.authKey)"]
     }
     
+    func downloadImage(from urlString: String, completed: @escaping (UIImage?) -> Void) {
+        // Create cache key
+        let cacheKey = NSString(string: urlString)
+        
+        // Check if image is already in cache
+        if let image = cache.object(forKey: cacheKey) {
+            completed(image)
+            return
+        }
+        
+        // Check if URL is valid
+        guard let url = URL(string: urlString) else {
+            completed(nil)
+            return
+        }
+        
+        // Perform URL session task
+        let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let self = self else { return }
+            
+            // Check for errors and valid HTTP response
+            guard error == nil, let response = response as? HTTPURLResponse, response.statusCode == 200, let data = data, let image = UIImage(data: data) else {
+                completed(nil)
+                return
+            }
+            
+            // Store image in cache and call completion handler
+            self.cache.setObject(image, forKey: cacheKey)
+            completed(image)
+        }
+        
+        // Start the task
+        task.resume()
+    }
 }
- 
+

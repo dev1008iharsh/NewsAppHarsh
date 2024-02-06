@@ -1,12 +1,4 @@
-
-//
-//  GSImageViewerController.swift
-//  GSImageViewerControllerExample
-//
-//  Created by Gesen on 15/12/22.
-//  Copyright © 2015年 Gesen. All rights reserved.
-//
-
+ 
 import UIKit
 
 public struct HpdImageInfo {

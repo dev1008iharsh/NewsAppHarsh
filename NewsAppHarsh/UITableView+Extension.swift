@@ -23,7 +23,7 @@ extension UITableView {
                 activityIndicatorView.style = .whiteLarge
             }
             
-            activityIndicatorView.color = .systemPink
+            activityIndicatorView.color = .label
             activityIndicatorView.hidesWhenStopped = true
             
             self.tableFooterView = activityIndicatorView
