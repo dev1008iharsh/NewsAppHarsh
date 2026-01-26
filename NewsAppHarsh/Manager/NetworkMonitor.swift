@@ -15,14 +15,14 @@ final class NetworkMonitor {
     private let monitor: NWPathMonitor
     private let queue = DispatchQueue(label: "NetworkMonitorQueue")
 
+    // Callback to notify listeners (UI) about status changes
+    var onStatusChange: ((Bool) -> Void)?
+
     private(set) var isConnected: Bool = false
     private(set) var connectionType: ConnectionType = .unknown
 
     enum ConnectionType {
-        case wifi
-        case cellular
-        case ethernet
-        case unknown
+        case wifi, cellular, ethernet, unknown
     }
 
     private init() {
@@ -33,11 +33,21 @@ final class NetworkMonitor {
         monitor.pathUpdateHandler = { [weak self] path in
             guard let self = self else { return }
 
-            self.isConnected = (path.status == .satisfied)
-
+            let newStatus = (path.status == .satisfied)
+            
+            // Update connection type
             self.getConnectionType(path)
 
-            print("🌐 Network Status: \(self.isConnected ? "Connected ✅" : "Disconnected ❌")")
+            // Only notify if status actually changed or specifically needed
+            // But usually, we just update state and notify.
+            self.isConnected = newStatus
+            
+            // Notify listeners on Main Thread (since UI will likely update)
+            DispatchQueue.main.async {
+                self.onStatusChange?(self.isConnected)
+            }
+
+            print("🌐 Network Status: \(self.isConnected ? "Connected" : "Disconnected")")
         }
         monitor.start(queue: queue)
     }

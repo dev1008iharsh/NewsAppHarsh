@@ -48,6 +48,7 @@ final class ApiManager: Sendable {
             request.httpBody = try? JSONEncoder().encode(parameters)
         }
 
+        print("🟢🟢🟢 API Calling : ",request.url ?? "no url")
         // Data Task
         URLSession.shared.dataTask(with: request) { data, response, error in
 

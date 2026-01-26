@@ -27,11 +27,10 @@ extension NewsEndPointItem: EndPointType {
     var path: String {
         switch self {
         case .news:
-            return "v2/everything?q=bitcoin"
-            // return "v2/top-headlines?country=us&apiKey=467ec62e59864e5ab75a84be5287afee"
+            return "v2/everything?q=india&pageSize=20"
+            //https://newsapi.org/v2/everything?q=india&apiKey=467ec62e59864e5ab75a84be5287afee
             // we are passing api key in commanHeaders header bear token and it is working
         }
-        // GET https://newsapi.org/v2/everything&apiKey=API_KEY
     }
 
     var page: Int {
@@ -42,7 +41,7 @@ extension NewsEndPointItem: EndPointType {
     }
 
     var baseUrl: String {
-        // we can also firect return we have same url for whole project
+        // we can also direct return we have same url for whole project
         switch self {
         case .news:
             return "https://newsapi.org/"

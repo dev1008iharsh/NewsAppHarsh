@@ -5,7 +5,6 @@
 //  Created by My Mac Mini on 31/01/24.
 //
 import UIKit
-import UIKit
 
 final class NewsHomeVC: UIViewController {
     // MARK: - Outlets
@@ -22,6 +21,9 @@ final class NewsHomeVC: UIViewController {
     private var totalResultsCount = 0
     private var totalPage = 1
     private var currentPage = 1
+    private var isLoading = false
+
+    private var lastConnectionStatus: Bool?
 
     // MARK: - Lifecycle
 
@@ -29,8 +31,12 @@ final class NewsHomeVC: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupBindings()
+        setupNetworkObserver() // 📡 Start listening to network changes
 
+        // Load Offline Data (Instant)
         fetchOfflineData()
+
+        // Try Fetching Fresh Data
         loadFreshData()
     }
 
@@ -47,10 +53,64 @@ final class NewsHomeVC: UIViewController {
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
     }
 
+    // MARK: - Network Observer (Pro Feature 🚀)
+
+    private func setupNetworkObserver() {
+        NetworkMonitor.shared.onStatusChange = { [weak self] isConnected in
+            guard let self = self else { return }
+
+            if self.lastConnectionStatus == isConnected {
+                return
+            }
+
+            let previousStatus = self.lastConnectionStatus
+
+            self.lastConnectionStatus = isConnected
+
+            // 2. Handle Logic based on Previous Status
+            if previousStatus == nil {
+                // 👉 App Launch (First Time)
+                // જો એપ ખુલતાની સાથે જ Offline હોય, તો ટોસ્ટ બતાવો.
+                // જો Online હોય, તો કઈ જ કરવાની જરૂર નથી (Silent).
+                if !isConnected {
+                    self.showOfflineToast()
+                }
+            } else {
+                // 👉 Runtime Change (State Changed)
+                if isConnected {
+                    // Offline ➔ Online
+                    self.showBackOnlineAlert()
+                } else {
+                    // Online ➔ Offline
+                    self.showOfflineToast()
+                }
+            }
+        }
+    }
+
+    private func showBackOnlineAlert() {
+        // Prevent alert stacking if one is already presented
+        if presentedViewController is UIAlertController { return }
+
+        let alert = UIAlertController(title: "Back Online 🟢", message: "You are connected to the internet. Do you want to fetch the latest news?", preferredStyle: .alert)
+
+        let fetchAction = UIAlertAction(title: "Fetch News", style: .default) { [weak self] _ in
+            self?.refreshData() // Call API
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
+
+        alert.addAction(cancelAction)
+        alert.addAction(fetchAction)
+
+        present(alert, animated: true)
+    }
+
     // MARK: - Data Loading Logic
 
     private func loadFreshData() {
         if NetworkMonitor.shared.isConnected {
+            LoaderManager.shared.startLoader(message: "Fetching latest news")
             viewModel.fetchNewsApi(page: currentPage)
         } else if articles.isEmpty {
             showOfflineToast()
@@ -67,12 +127,21 @@ final class NewsHomeVC: UIViewController {
 
     private func showOfflineToast() {
         DispatchQueue.main.async { [weak self] in
-            LoaderManager.shared.stopLoader()
-            HapticManager.shared.play(.warning)
-
             guard let self = self else { return }
 
-            let toast = UILabel(frame: CGRect(x: 40, y: 150, width: self.view.frame.width - 80, height: 40))
+            // Stop loaders if running
+            LoaderManager.shared.stopLoader()
+            self.refreshControl.endRefreshing()
+            HapticManager.shared.play(.warning)
+
+            let toast = UILabel(
+                frame: CGRect(
+                    x: 40,
+                    y: self.view.frame.height - 80,
+                    width: self.view.frame.width - 80,
+                    height: 50
+                )
+            )
             toast.backgroundColor = .systemRed
             toast.text = "Offline Mode"
             toast.textColor = .white
@@ -108,23 +177,28 @@ final class NewsHomeVC: UIViewController {
             DispatchQueue.main.async {
                 switch event {
                 case .loading:
+                    self.isLoading = true
                     if self.articles.isEmpty {
-                        LoaderManager.shared.startLoader(message: "Updating...")
+                        LoaderManager.shared.startLoader(message: "Updating latest news...")
                     } else if self.currentPage > 1 {
                         self.tblNewsList.showBottomLoader()
                     }
 
                 case .stopLoading:
+                    self.isLoading = false
                     LoaderManager.shared.stopLoader()
                     self.tblNewsList.hideBottomLoader()
                     self.refreshControl.endRefreshing()
 
                 case .dataLoaded:
+                    self.isLoading = false
                     self.handleDataLoaded()
 
                 case let .network(error):
+                    self.isLoading = false
                     print("Network Error: \(error?.localizedDescription ?? "Unknown")")
-                    self.showAlert(title: "Unable to get data from internet", message: "Network Error: \(error?.localizedDescription ?? "Unknown")")
+                    // Optional: Show alert only if it's a critical failure, otherwise toast is enough
+                    self.showAlert(title: "❌ Unable to get latest data", message: "Network Error: \(error?.localizedDescription ?? "Unknown")")
                 }
             }
         }
@@ -134,32 +208,27 @@ final class NewsHomeVC: UIViewController {
 
     private func handleDataLoaded() {
         totalResultsCount = viewModel.newsDataModel?.totalResults ?? 0
-        totalPage = Int(ceil(Double(totalResultsCount) / 20.0))
+        totalPage = Int(ceil(Double(totalResultsCount) / 20))
+        print("totalPagetotalPagetotalPages",totalPage)
 
         let newArticles = viewModel.articles
 
         // --- OPTIMIZATION START ---
-        // જો Page 1 હોય અને નવો ડેટા == જૂનો ડેટા હોય, તો કઈ જ કરવાની જરૂર નથી.
         if currentPage == 1 {
             // Check if current Local DB data matches exactly with New API data
             if articles == newArticles {
                 print("✅ Data is exactly same. Skipping Database Operations.")
                 LoaderManager.shared.stopLoader()
                 refreshControl.endRefreshing()
-                return // અહીંથી જ પાછા વળી જાઓ! 🛑
+                return
             }
-        }
-        // --- OPTIMIZATION END ---
-
-        // જો ડેટા અલગ હોય, તો જ આગળ વધો...
-        DispatchQueue.main.async {
-            LoaderManager.shared.startLoader(message: "Syncing Data...")
         }
 
         if currentPage == 1 {
             // Delete Old Data
             DBManager.shared.deleteAllData { [weak self] in
                 DispatchQueue.main.async {
+                    LoaderManager.shared.startLoader(message: "Syncing News Data...")
                     self?.saveAndRefresh()
                 }
             }
@@ -173,7 +242,6 @@ final class NewsHomeVC: UIViewController {
 
     private func saveAndRefresh() {
         DBManager.shared.saveNewsCoreData(newData: viewModel.articles) { [weak self] in
-
             DispatchQueue.main.async {
                 guard let self = self else { return }
 
@@ -201,17 +269,17 @@ extension NewsHomeVC: UITableViewDataSource, UITableViewDelegate {
 
         cell.onReadButtonTapped = { [weak self] in
             guard let self = self else { return }
-
-            // Direct Call with URL
             self.navigateToWebView(url: cell.article?.articleUrl)
         }
 
         cell.onImageTapped = { [weak self] tappedImageView in
             guard let self = self else { return }
             guard let image = tappedImageView.image else { return }
+
             let hdUrl = URL(string: cell.article?.imageUrl ?? "")
             let imageInfo = HpdImageInfo(image: image, imageMode: .aspectFit, imageHD: hdUrl)
             let transitionInfo = HpdTransitionInfo(fromView: tappedImageView)
+
             let imageViewer = HpdImageViewerController(imageInfo: imageInfo, transitionInfo: transitionInfo)
             self.present(imageViewer, animated: true)
         }
@@ -228,7 +296,7 @@ extension NewsHomeVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let isLastRow = indexPath.row == articles.count - 1
 
-        if isLastRow && currentPage < totalPage {
+        if isLastRow && currentPage < totalPage && !isLoading{
             currentPage += 1
             HapticManager.shared.play(.selection)
             viewModel.fetchNewsApi(page: currentPage)
@@ -236,14 +304,11 @@ extension NewsHomeVC: UITableViewDataSource, UITableViewDelegate {
     }
 
     private func navigateToWebView(url: String?) {
-        // 1. URL Safe Check
         guard let urlStr = url, !urlStr.isEmpty else { return }
 
-        // 2. Internet Check
         if NetworkMonitor.shared.isConnected {
             let nextVC = storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as! WebViewVC
             nextVC.strNewsUrl = urlStr
-
             HapticManager.shared.play(.light)
             navigationController?.pushViewController(nextVC, animated: true)
         } else {
