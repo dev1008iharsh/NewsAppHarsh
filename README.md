@@ -42,17 +42,17 @@ Delete ➝ Save ➝ Refresh UI ✅ (No UI freeze / no data race) 🧊
 
 New Flow:
 📥 Load Offline Data ➝ 🌐 Silent Background API Fetch ➝ 💾 Update DB ➝ 🔄 Refresh UI
-	•	🟰 Article model માં Equatable add કર્યું
+	•	🟰 Article model Equatable add 
 	•	🧠 Smart optimization:
-જો API data == Local DB data ➝ DB write skip 🚫💾 (Battery + performance saver 🔋⚡)
+API data == Local DB data ➝ DB write skip 🚫💾 (Battery + performance saver 🔋⚡)
 	•	🎯 MainActor warnings fix કરીને UI updates always on Main Thread 🧵📱
 
   🖼️ Image Loading & Multi-Layer Caching (No Flicker!) ✨📸
 	•	🔥 Fixed cell reuse image flickering issue 🧊
-	•	loadImage() હવે URLSessionDataTask return કરે છે (task cancel support) ⛔️
+	•	loadImage()  URLSessionDataTask  (task cancel support) ⛔️
 	•	UIImageView extension with Associated Objects:
-	•	current URL track કરે છે 🔗
-	•	old task cancel કરે છે જ્યારે cell reuse થાય ♻️
+	•	current URL track 🔗
+	•	old task cancel  જ્યારે cell reuse ♻️
 	•	🧠 Memory + Disk caching = super fast scrolling ⚡🧠
 
   🧿 New UI Components & UX Enhancements 🎨😍
