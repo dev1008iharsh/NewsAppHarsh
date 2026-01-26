@@ -4,250 +4,251 @@
 //
 //  Created by My Mac Mini on 31/01/24.
 //
-
+import UIKit
 import UIKit
 
-class NewsHomeVC: UIViewController {
-    //MARK: -  @IBOutlet
-    @IBOutlet weak var tblNewsList: UITableView!
-    
-    
-    //MARK: -  Properties
-    
-    var totalResultsCount = 0
-    var totalPage = 1
-    var currentPage = 1
-    
-    private var news : NewsModel?
-    private var viewModel = NewsViewModel()
-    
-    var marrArticles = [Articles]()
-     
-    var refreshControl = UIRefreshControl()
-    
-    //MARK: -  ViewController LifeCycle
+final class NewsHomeVC: UIViewController {
+    // MARK: - Outlets
+
+    @IBOutlet private var tblNewsList: UITableView!
+
+    // MARK: - Properties
+
+    private let viewModel = NewsViewModel()
+    private let refreshControl = UIRefreshControl()
+
+    // Pagination Properties
+    private var articles = [Article]()
+    private var totalResultsCount = 0
+    private var totalPage = 1
+    private var currentPage = 1
+
+    // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        DispatchQueue.main.async {
-            Utility.shared.showLoader(true)
-        }
-        
+        setupUI()
+        setupBindings()
+
+        fetchOfflineData()
+        loadFreshData()
+    }
+
+    // MARK: - Setup UI
+
+    private func setupUI() {
         title = "Breaking News"
-        
-        configuration()
-        
-    }
-    
-}
 
-extension NewsHomeVC{
-    
-    // this is work like viewDidLoad
-    func configuration(){
-        
         tblNewsList.register(UINib(nibName: "NewsTVC", bundle: nil), forCellReuseIdentifier: "NewsTVC")
-        
+        tblNewsList.refreshControl = refreshControl
+        tblNewsList.dataSource = self
+        tblNewsList.delegate = self
+
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
-        
-        initViewModel()
-        
     }
-    
-    func initViewModel(){
-        
-        if NetworkReachability.shared.isNetworkAvailable() {
-            print("Network is available")
-            observeEvent()
-            tblNewsList.addSubview(refreshControl)
+
+    // MARK: - Data Loading Logic
+
+    private func loadFreshData() {
+        if NetworkMonitor.shared.isConnected {
             viewModel.fetchNewsApi(page: currentPage)
-            
-        } else {
-            print("Network is not available")
-            self.totalPage = 1
-            self.offlineMessage()
-            
-            DispatchQueue.main.async {
-                self.fetchOfflineDataFromCoreData()
-                Utility.shared.showLoader(false)
+        } else if articles.isEmpty {
+            showOfflineToast()
+        }
+    }
+
+    // MARK: - Actions
+
+    @objc private func refreshData() {
+        currentPage = 1
+        HapticManager.shared.play(.light)
+        loadFreshData()
+    }
+
+    private func showOfflineToast() {
+        DispatchQueue.main.async { [weak self] in
+            LoaderManager.shared.stopLoader()
+            HapticManager.shared.play(.warning)
+
+            guard let self = self else { return }
+
+            let toast = UILabel(frame: CGRect(x: 40, y: 150, width: self.view.frame.width - 80, height: 40))
+            toast.backgroundColor = .systemRed
+            toast.text = "Offline Mode"
+            toast.textColor = .white
+            toast.textAlignment = .center
+            toast.layer.cornerRadius = 20
+            toast.clipsToBounds = true
+            toast.alpha = 0
+            self.view.addSubview(toast)
+
+            UIView.animate(withDuration: 0.5, animations: { toast.alpha = 1 }) { _ in
+                UIView.animate(withDuration: 0.5, delay: 2.0, options: [], animations: { toast.alpha = 0 }) { _ in
+                    toast.removeFromSuperview()
+                }
             }
         }
     }
-    
-    func offlineMessage(){
-        // Create a view
-        
-        let viewWidth: CGFloat = 270
-        let myView = UIView(frame: CGRect(x: ((view.bounds.width - viewWidth) / 2), y: 150, width: viewWidth, height: 40))
-        myView.layer.cornerRadius = 20
-        myView.backgroundColor = .red
-        
-        
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: myView.bounds.width, height: myView.bounds.height))
-        label.text = "Oops! No Internet Connection"
-        label.textColor = .systemBackground
-        label.textAlignment = .center
-        
-        myView.addSubview(label)
-        self.view.addSubview(myView)
-        
-        
-        UIView.animate(withDuration: 1.0, delay: 1.0, options: .curveEaseOut, animations: {
-            myView.alpha = 0.0
-        }, completion: { finished in
-            
-            myView.removeFromSuperview()
-        })
-        
-        Utility.shared.heavyHapticFeedBack()
-    }
-    
-    func fetchOfflineDataFromCoreData(){
-        var arrNewsCoreData = [ArticleOfflineCore]()
-        arrNewsCoreData = DBManager.shared.fetchCoreDataNews()
-        //print("arrNewsCoreData",arrNewsCoreData)
-        self.marrArticles.removeAll()
-        for i in 0...arrNewsCoreData.count - 1{
-            
-            let arical = Articles(author: (arrNewsCoreData[i].author ?? ""), title: (arrNewsCoreData[i].title ?? ""), myDescription: (arrNewsCoreData[i].myDescription ?? ""), url: (arrNewsCoreData[i].url ?? ""), urlToImage: (arrNewsCoreData[i].urlToImage ?? ""), publishedAt: (arrNewsCoreData[i].publishedAt ?? ""), content: (arrNewsCoreData[i].content ?? ""))
-            
-            self.marrArticles.append(arical)
-            
+
+    // Fetch data from Core Data
+    private func fetchOfflineData() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.articles = DBManager.shared.fetchCoreDataNews()
+            self.tblNewsList.reloadData()
         }
-        Utility.shared.heavyHapticFeedBack()
-        self.tblNewsList.reloadData()
     }
-    func calculateTotalPages(totalResultCount: Int, resultsPerPage: Int) -> Int {
-        let totalPages = Int(ceil(Double(totalResultCount) / Double(resultsPerPage)))
-        return totalPages
-    }
-    //MARK: -  API Response
-    func observeEvent(){
+
+    // MARK: - ViewModel Bindings
+
+    private func setupBindings() {
         viewModel.eventHandler = { [weak self] event in
-            guard let self else {return}
-            
-            switch event {
-            case .loading:
-                print("data loading")
-                
-            case .stopLoading:
-                //print("loading finished")
-                DispatchQueue.main.async {
-                    Utility.shared.showLoader(false)
-                    self.tblNewsList.stopLoading()
-                }
-                
-            case .dataLoaded:
-                //print(viewModel.newsDataModel)
-                self.totalResultsCount = viewModel.newsDataModel?.totalResults ?? 1
-                let totalPages = calculateTotalPages(totalResultCount: self.totalResultsCount, resultsPerPage: 20)
-                
-                self.totalPage = totalPages
-                if currentPage == 1{
-                    DBManager.shared.deleteAllData()
-                }
-            
-                DispatchQueue.main.async {
-                   
-                    DBManager.shared.saveNewsCoreData(newData :  self.viewModel.articles) {
-                        self.fetchOfflineDataFromCoreData()
+            guard let self = self else { return }
+
+            DispatchQueue.main.async {
+                switch event {
+                case .loading:
+                    if self.articles.isEmpty {
+                        LoaderManager.shared.startLoader(message: "Updating...")
+                    } else if self.currentPage > 1 {
+                        self.tblNewsList.showBottomLoader()
                     }
-                    
+
+                case .stopLoading:
+                    LoaderManager.shared.stopLoader()
+                    self.tblNewsList.hideBottomLoader()
+                    self.refreshControl.endRefreshing()
+
+                case .dataLoaded:
+                    self.handleDataLoaded()
+
+                case let .network(error):
+                    print("Network Error: \(error?.localizedDescription ?? "Unknown")")
+                    self.showAlert(title: "Unable to get data from internet", message: "Network Error: \(error?.localizedDescription ?? "Unknown")")
                 }
-            case .network(let error):
-                print(error ?? "Error at ObserEvnt")
-                
             }
-            
         }
     }
-    
-    @objc func refreshData() {
-        self.currentPage = 1
-        self.marrArticles.removeAll()
-        self.viewModel.fetchNewsApi(page: 1)
-        self.tblNewsList.reloadData()
-        self.refreshControl.endRefreshing()
-        Utility.shared.heavyHapticFeedBack()
+
+    // MARK: - Handle Data Sync (Optimized 🚀)
+
+    private func handleDataLoaded() {
+        totalResultsCount = viewModel.newsDataModel?.totalResults ?? 0
+        totalPage = Int(ceil(Double(totalResultsCount) / 20.0))
+
+        let newArticles = viewModel.articles
+
+        // --- OPTIMIZATION START ---
+        // જો Page 1 હોય અને નવો ડેટા == જૂનો ડેટા હોય, તો કઈ જ કરવાની જરૂર નથી.
+        if currentPage == 1 {
+            // Check if current Local DB data matches exactly with New API data
+            if articles == newArticles {
+                print("✅ Data is exactly same. Skipping Database Operations.")
+                LoaderManager.shared.stopLoader()
+                refreshControl.endRefreshing()
+                return // અહીંથી જ પાછા વળી જાઓ! 🛑
+            }
+        }
+        // --- OPTIMIZATION END ---
+
+        // જો ડેટા અલગ હોય, તો જ આગળ વધો...
+        DispatchQueue.main.async {
+            LoaderManager.shared.startLoader(message: "Syncing Data...")
+        }
+
+        if currentPage == 1 {
+            // Delete Old Data
+            DBManager.shared.deleteAllData { [weak self] in
+                DispatchQueue.main.async {
+                    self?.saveAndRefresh()
+                }
+            }
+        } else {
+            // Append Data
+            DispatchQueue.main.async {
+                self.saveAndRefresh()
+            }
+        }
     }
-    
+
+    private func saveAndRefresh() {
+        DBManager.shared.saveNewsCoreData(newData: viewModel.articles) { [weak self] in
+
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+
+                LoaderManager.shared.stopLoader()
+                self.fetchOfflineData()
+                HapticManager.shared.play(.success)
+            }
+        }
+    }
 }
 
-//MARK: -  UITableViewDelegate, UITableViewDataSource
-extension NewsHomeVC : UITableViewDataSource,UITableViewDelegate{
+// MARK: - TableView DataSource & Delegate
+
+extension NewsHomeVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return marrArticles.count
+        return articles.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "NewsTVC", for: indexPath) as? NewsTVC else {
             return UITableViewCell()
         }
-        
-        cell.article = marrArticles[indexPath.row]
-        
-        cell.btnWeb.addTarget(self, action: #selector(btnWebTapped(sender:)), for:.touchUpInside)
-        cell.btnWeb.tag = indexPath.row
-        
+
+        cell.article = articles[indexPath.row]
+
+        cell.onReadButtonTapped = { [weak self] in
+            guard let self = self else { return }
+
+            // Direct Call with URL
+            self.navigateToWebView(url: cell.article?.articleUrl)
+        }
+
+        cell.onImageTapped = { [weak self] tappedImageView in
+            guard let self = self else { return }
+            guard let image = tappedImageView.image else { return }
+            let hdUrl = URL(string: cell.article?.imageUrl ?? "")
+            let imageInfo = HpdImageInfo(image: image, imageMode: .aspectFit, imageHD: hdUrl)
+            let transitionInfo = HpdTransitionInfo(fromView: tappedImageView)
+            let imageViewer = HpdImageViewerController(imageInfo: imageInfo, transitionInfo: transitionInfo)
+            self.present(imageViewer, animated: true)
+        }
+
         return cell
-        
     }
-    
-    @objc func btnWebTapped(sender: UIButton) {
-        
-        // we can also use closure for navigation on click tap - here i use another method
-        
-        if NetworkReachability.shared.isNetworkAvailable() {
-            let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as! WebViewVC
-            
-            if let url = marrArticles[sender.tag].url{
-                
-                Utility.shared.lightHapticFeedBack()
-                
-                nextVC.strNewsUrl = url
-                self.navigationController?.pushViewController(nextVC, animated: true)
-            }
-        } else {
-            Utility.shared.heavyHapticFeedBack()
-            Utility.shared.showAlertHandler(title: "Oops! It seems like you're offline", message: "Please check your internet connection and try again later.", view: self) { alert in
-                self.dismiss(animated: true)
-            }
-        }
-        
-        
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 170
-    }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "NewsDetailsVC") as! NewsDetailsVC
-        
-        nextVC.article = marrArticles[indexPath.row]
-        
-        self.navigationController?.pushViewController(nextVC, animated: true)
-        
+        let nextVC = storyboard?.instantiateViewController(withIdentifier: "NewsDetailsVC") as! NewsDetailsVC
+        nextVC.article = articles[indexPath.row]
+        navigationController?.pushViewController(nextVC, animated: true)
     }
-    
+
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.0001) {
-            if tableView.visibleCells.contains(cell) {
-                if (indexPath.row == self.marrArticles.count - 1) && (self.totalPage > self.currentPage){
-                    
-                    self.currentPage = self.currentPage + 1
-                    self.viewModel.fetchNewsApi(page: self.currentPage)
-                    
-                    tableView.addLoading(indexPath)
-                }
-            }
+        let isLastRow = indexPath.row == articles.count - 1
+
+        if isLastRow && currentPage < totalPage {
+            currentPage += 1
+            HapticManager.shared.play(.selection)
+            viewModel.fetchNewsApi(page: currentPage)
         }
-        
-        
     }
-    
+
+    private func navigateToWebView(url: String?) {
+        // 1. URL Safe Check
+        guard let urlStr = url, !urlStr.isEmpty else { return }
+
+        // 2. Internet Check
+        if NetworkMonitor.shared.isConnected {
+            let nextVC = storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as! WebViewVC
+            nextVC.strNewsUrl = urlStr
+
+            HapticManager.shared.play(.light)
+            navigationController?.pushViewController(nextVC, animated: true)
+        } else {
+            HapticManager.shared.play(.error)
+            showOfflineToast()
+        }
+    }
 }
-
-

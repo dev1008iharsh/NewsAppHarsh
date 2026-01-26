@@ -5,91 +5,136 @@
 //  Created by My Mac Mini on 01/02/24.
 //
 
-import Foundation
 import CoreData
+import Foundation
 import UIKit
 
-class DBManager{
-    static let shared = DBManager()
-    private init(){}
-    private var context: NSManagedObjectContext {
-        return (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    }
+import UIKit
+import CoreData
+
+final class DBManager: Sendable {
     
-    func saveNewsCoreData(newData: [Articles], completion: @escaping () -> Void) {
-        // Fetch existing data
-        var existingData = fetchCoreDataNews()
-        //print("existingData",existingData)
+    // Singleton Instance (This is implicitly lazy in Swift)
+    static let shared = DBManager()
+    
+    private init() {}
+    
+    // MARK: - Core Data Stack
+    
+    // ❌ 'lazy var' removed because it causes concurrency errors in Swift 6.
+
+    let persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "NewsAppHarsh")
         
-        // Determine the starting index for the order
-        let startingIndex = existingData.count
-        
-        // Append new data to existing data
-        for (index, article) in newData.enumerated() {
-            let articalEntity = ArticleOfflineCore(context: context) // Create new instance
-            articalEntity.author = article.author
-            articalEntity.title = article.title
-            articalEntity.myDescription = article.myDescription
-            articalEntity.url = article.url
-            articalEntity.urlToImage = article.urlToImage
-            articalEntity.publishedAt = article.publishedAt
-            articalEntity.content = article.content
-            articalEntity.order = Int64(startingIndex + index) // Set the order
-            
-            existingData.append(articalEntity) // Append to existing data
+        container.loadPersistentStores { _, error in
+            if let error = error as NSError? {
+                print("❌ Unresolved Core Data Error: \(error), \(error.userInfo)")
+            }
         }
         
-        // Save the updated data
-        saveContext()
+        // Handling Duplicates
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         
-        // Call completion handler
-        completion()
+        // UI Updates: Automatically update UI when background changes happen
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        
+        return container
+    }()
+    
+    // Main Thread Context (For Fetching Only)
+    var viewContext: NSManagedObjectContext {
+        return persistentContainer.viewContext
     }
     
-    func fetchCoreDataNews() -> [ArticleOfflineCore] {
-        let fetchRequest: NSFetchRequest<ArticleOfflineCore> = ArticleOfflineCore.fetchRequest()
+    // MARK: - Save Data (Background)
+    
+    func saveNewsCoreData(newData: [Article], completion: @escaping @Sendable () -> Void) {
         
-        // Sort descriptor to fetch entities based on the order attribute
-        let sortDescriptor = NSSortDescriptor(key: "order", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
+        // Perform operations on background context to avoid Main Thread Freeze
+        persistentContainer.performBackgroundTask { context in
+            
+            // 1. Order Logic
+            let countRequest: NSFetchRequest<ArticleOfflineCore> = ArticleOfflineCore.fetchRequest()
+            let currentCount = (try? context.count(for: countRequest)) ?? 0
+            
+            for (index, article) in newData.enumerated() {
+                
+                // 2. Duplicate Check
+                let fetchRequest: NSFetchRequest<ArticleOfflineCore> = ArticleOfflineCore.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "articleUrl == %@", article.articleUrl ?? "")
+                
+                if let existing = try? context.fetch(fetchRequest), existing.isEmpty {
+                    
+                    let entity = ArticleOfflineCore(context: context)
+                    
+                    entity.author = article.author
+                    entity.title = article.title
+                    entity.content = article.content
+                    entity.publishedAt = article.publishedAt
+                    entity.descriptionText = article.descriptionText
+                    entity.articleUrl = article.articleUrl
+                    entity.imageUrl = article.imageUrl
+                    
+                    // Maintain Order
+                    entity.order = Int64(currentCount + index)
+                }
+            }
+            
+            // Save & Notify
+            try? context.save()
+            print("✅ All Data SAVED Successfully (Background)")
+            DispatchQueue.main.async { completion() }
+        }
+    }
+    
+    // MARK: - Fetch Data (Main Thread)
+    
+    func fetchCoreDataNews() -> [Article] {
+        let fetchRequest: NSFetchRequest<ArticleOfflineCore> = ArticleOfflineCore.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "order", ascending: true)]
         
         do {
-            let existingData = try context.fetch(fetchRequest)
-            return existingData
+            let results = try viewContext.fetch(fetchRequest)
+            return results.map { entity in
+                Article(
+                    author: entity.author,
+                    title: entity.title,
+                    descriptionText: entity.descriptionText,
+                    articleUrl: entity.articleUrl,
+                    imageUrl: entity.imageUrl,
+                    publishedAt: entity.publishedAt,
+                    content: entity.content
+                )
+            }
         } catch {
-            // Handle error here
-            print("Error fetching existing data: \(error.localizedDescription)")
+            print("❌ Fetch Error: \(error.localizedDescription)")
             return []
         }
     }
     
+    // MARK: - Delete All Data (Background)
     
-    func saveContext() {
-        do {
-            try context.save() // aa karya vafar database ma save na thay
-            print("*** SAVED CoreData Successfully")
-        }catch {
-            print("*** User CoreData saving error", error)
-        }
-    }
-    
-    func deleteAllData() {
-        
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "ArticleOfflineCore")
-        
-        do {
-            let entities = try context.fetch(fetchRequest) as! [NSManagedObject]
-            for entity in entities {
-                context.delete(entity)
+    func deleteAllData(completion: @escaping @Sendable () -> Void) {
+        persistentContainer.performBackgroundTask { context in
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = ArticleOfflineCore.fetchRequest()
+            
+            do {
+                guard let results = try context.fetch(fetchRequest) as? [NSManagedObject] else { return }
+                
+                for object in results {
+                    context.delete(object)
+                }
+                
+                try context.save()
+                print("✅ All Data DELETED Successfully (Background)")
+                
+                // Notify UI on Main Thread
+                DispatchQueue.main.async { completion() }
+                
+            } catch {
+                print("❌ Delete Error: \(error.localizedDescription)")
+                DispatchQueue.main.async { completion() }
             }
-            try context.save()
-            //print("*** DELETED CoreDataSuccessfully")
-        } catch let error {
-            print("Error CoreData deleting all data: \(error)")
         }
     }
-    
-    
 }
-
-

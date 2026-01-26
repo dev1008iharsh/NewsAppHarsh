@@ -7,41 +7,41 @@
 
 import Foundation
 
+import Foundation
 
-struct NewsModel: Codable {
-    
+// MARK: - Main Response
+
+struct NewsResponse: Codable {
     let status: String?
     let totalResults: Int?
-    let articles: [Articles]?
-    
-    private enum CodingKeys: String, CodingKey {
-        case status = "status"
-        case totalResults = "totalResults"
-        case articles = "articles"
-    }
-    
+    let articles: [Article]?
 }
 
-struct Articles: Codable {
-    
-    //let source: Source?
-    var author: String?
-    var title: String?
-    var myDescription: String?
-    var url: String?
-    var urlToImage: String?
-    var publishedAt: String?
-    var content: String?
-    
-    private enum CodingKeys: String, CodingKey {
-        //case source = "source"
-        case author = "author"
-        case title = "title"
-        case myDescription = "description"
-        case url = "url"
-        case urlToImage = "urlToImage"
-        case publishedAt = "publishedAt"
-        case content = "content"
+import Foundation
+
+// MARK: - Article Model
+
+// Added 'Equatable' to compare two articles easily
+struct Article: Codable, Sendable, Equatable {
+    let author: String?
+    let title: String?
+    let descriptionText: String?
+    let articleUrl: String?
+    let imageUrl: String?
+    let publishedAt: String?
+    let content: String?
+
+    // JSON Keys Mapping
+    enum CodingKeys: String, CodingKey {
+        case author, title, content, publishedAt
+        case descriptionText = "description"
+        case articleUrl = "url"
+        case imageUrl = "urlToImage"
     }
-    
+
+    // Equatable Logic: (Swift automatic rite badhu compare kari le chhe, pan explicit lakhiye to vadhu saru)
+    static func == (lhs: Article, rhs: Article) -> Bool {
+        return lhs.articleUrl == rhs.articleUrl &&
+            lhs.publishedAt == rhs.publishedAt
+    }
 }

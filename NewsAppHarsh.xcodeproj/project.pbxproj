@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0441537D2F26AA78003DBFFC /* NewsAppHarsh.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0483323E2B6A5267008E329C /* NewsAppHarsh.xcdatamodeld */; };
 		048332362B6A5267008E329C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048332352B6A5267008E329C /* AppDelegate.swift */; };
 		048332382B6A5267008E329C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048332372B6A5267008E329C /* SceneDelegate.swift */; };
 		0483323D2B6A5267008E329C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0483323B2B6A5267008E329C /* Main.storyboard */; };
-		048332402B6A5267008E329C /* NewsAppHarsh.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0483323E2B6A5267008E329C /* NewsAppHarsh.xcdatamodeld */; };
 		048332422B6A5269008E329C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 048332412B6A5269008E329C /* Assets.xcassets */; };
 		048332452B6A5269008E329C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 048332432B6A5269008E329C /* LaunchScreen.storyboard */; };
 		048332AE2B6A5499008E329C /* EndPointType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048332AD2B6A5499008E329C /* EndPointType.swift */; };
@@ -25,15 +25,20 @@
 		048332C72B6A71F0008E329C /* GoogleSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 048332C42B6A71F0008E329C /* GoogleSans-Bold.ttf */; };
 		048332C82B6A71F0008E329C /* GoogleSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 048332C52B6A71F0008E329C /* GoogleSans-Regular.ttf */; };
 		048332C92B6A71F0008E329C /* GoogleSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 048332C62B6A71F0008E329C /* GoogleSans-Medium.ttf */; };
-		04A71B9A2B7257D40002E398 /* UITableView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A71B992B7257D40002E398 /* UITableView+Extension.swift */; };
 		04B8FAA52B6A9FFC00478717 /* WebViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B8FAA42B6A9FFC00478717 /* WebViewVC.swift */; };
 		04B8FAA72B6AA65600478717 /* NewsDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B8FAA62B6AA65600478717 /* NewsDetailsVC.swift */; };
-		04B8FAA92B6ACD9700478717 /* HpdImageViewerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B8FAA82B6ACD9700478717 /* HpdImageViewerController.swift */; };
-		04E36CC42B72A21C00723586 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E36CC32B72A21C00723586 /* Utility.swift */; };
+		04BD8F5B2F268B7E0044884D /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BD8F5A2F268B7D0044884D /* HapticManager.swift */; };
+		04BD8F602F268BD40044884D /* AppUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BD8F5F2F268BD30044884D /* AppUtils.swift */; };
+		04BD8F622F268C390044884D /* LoaderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BD8F612F268C380044884D /* LoaderManager.swift */; };
+		04BD8F682F2698EA0044884D /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BD8F672F2698EA0044884D /* ImageLoader.swift */; };
+		04E54EB42F275D23002111D4 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04E54EB32F275D23002111D4 /* WebKit.framework */; };
+		04E54EB82F275FF9002111D4 /* HpdImageViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04E54EB72F275FEE002111D4 /* HpdImageViewer.swift */; };
 		04F0FB582B6B47B400F0533F /* DBManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0FB572B6B47B400F0533F /* DBManager.swift */; };
-		04F0FB5A2B6B576500F0533F /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0FB592B6B576500F0533F /* NetworkReachability.swift */; };
-		04F0FB5C2B6B6B2400F0533F /* UIImageView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0FB5B2B6B6B2400F0533F /* UIImageView+Extensions.swift */; };
-		04F0FB602B6B734B00F0533F /* HapticFeebacl+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0FB5F2B6B734B00F0533F /* HapticFeebacl+Extension.swift */; };
+		04F0FB5A2B6B576500F0533F /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F0FB592B6B576500F0533F /* NetworkMonitor.swift */; };
+		04FE72E42F276DBA00CDEB61 /* UITableView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FE72E22F276DBA00CDEB61 /* UITableView+Extension.swift */; };
+		04FE72E52F276DBA00CDEB61 /* HapticFeebacl+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FE72E02F276DBA00CDEB61 /* HapticFeebacl+Extension.swift */; };
+		04FE72E62F276DBA00CDEB61 /* UIImageView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FE72E12F276DBA00CDEB61 /* UIImageView+Extensions.swift */; };
+		04FE72E72F276DBA00CDEB61 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FE72E32F276DBA00CDEB61 /* UIViewController+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,15 +62,20 @@
 		048332C42B6A71F0008E329C /* GoogleSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSans-Bold.ttf"; sourceTree = "<group>"; };
 		048332C52B6A71F0008E329C /* GoogleSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSans-Regular.ttf"; sourceTree = "<group>"; };
 		048332C62B6A71F0008E329C /* GoogleSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GoogleSans-Medium.ttf"; sourceTree = "<group>"; };
-		04A71B992B7257D40002E398 /* UITableView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableView+Extension.swift"; sourceTree = "<group>"; };
 		04B8FAA42B6A9FFC00478717 /* WebViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewVC.swift; sourceTree = "<group>"; };
 		04B8FAA62B6AA65600478717 /* NewsDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDetailsVC.swift; sourceTree = "<group>"; };
-		04B8FAA82B6ACD9700478717 /* HpdImageViewerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HpdImageViewerController.swift; sourceTree = "<group>"; };
-		04E36CC32B72A21C00723586 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
+		04BD8F5A2F268B7D0044884D /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
+		04BD8F5F2F268BD30044884D /* AppUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUtils.swift; sourceTree = "<group>"; };
+		04BD8F612F268C380044884D /* LoaderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderManager.swift; sourceTree = "<group>"; };
+		04BD8F672F2698EA0044884D /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
+		04E54EB32F275D23002111D4 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		04E54EB72F275FEE002111D4 /* HpdImageViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HpdImageViewer.swift; sourceTree = "<group>"; };
 		04F0FB572B6B47B400F0533F /* DBManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DBManager.swift; sourceTree = "<group>"; };
-		04F0FB592B6B576500F0533F /* NetworkReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkReachability.swift; sourceTree = "<group>"; };
-		04F0FB5B2B6B6B2400F0533F /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
-		04F0FB5F2B6B734B00F0533F /* HapticFeebacl+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HapticFeebacl+Extension.swift"; sourceTree = "<group>"; };
+		04F0FB592B6B576500F0533F /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		04FE72E02F276DBA00CDEB61 /* HapticFeebacl+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HapticFeebacl+Extension.swift"; sourceTree = "<group>"; };
+		04FE72E12F276DBA00CDEB61 /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
+		04FE72E22F276DBA00CDEB61 /* UITableView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extension.swift"; sourceTree = "<group>"; };
+		04FE72E32F276DBA00CDEB61 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04E54EB42F275D23002111D4 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				048332342B6A5267008E329C /* NewsAppHarsh */,
+				04E54EB22F275D23002111D4 /* Frameworks */,
 				048332332B6A5267008E329C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -98,13 +110,13 @@
 		048332342B6A5267008E329C /* NewsAppHarsh */ = {
 			isa = PBXGroup;
 			children = (
+				04FE72DF2F276DA300CDEB61 /* Extensions */,
+				04BD8F5E2F268BC10044884D /* Utilities */,
 				048332A62B6A542E008E329C /* Application */,
-				048332A52B6A542C008E329C /* Constant */,
 				048332A32B6A5427008E329C /* Manager */,
-				048332A72B6A5451008E329C /* Utility */,
+				048332A72B6A5451008E329C /* Api Utility */,
 				048332A02B6A541F008E329C /* Storyboard */,
 				048332A12B6A5422008E329C /* Screens */,
-				048332A42B6A5429008E329C /* Extensions */,
 				048332A22B6A5425008E329C /* Resources */,
 				048332462B6A5269008E329C /* Info.plist */,
 				0483323E2B6A5267008E329C /* NewsAppHarsh.xcdatamodeld */,
@@ -143,31 +155,15 @@
 		048332A32B6A5427008E329C /* Manager */ = {
 			isa = PBXGroup;
 			children = (
+				04E54EB72F275FEE002111D4 /* HpdImageViewer.swift */,
+				04BD8F672F2698EA0044884D /* ImageLoader.swift */,
+				04BD8F612F268C380044884D /* LoaderManager.swift */,
+				04BD8F5A2F268B7D0044884D /* HapticManager.swift */,
 				048332B32B6A55FA008E329C /* ApiManager.swift */,
 				04F0FB572B6B47B400F0533F /* DBManager.swift */,
-				04F0FB592B6B576500F0533F /* NetworkReachability.swift */,
+				04F0FB592B6B576500F0533F /* NetworkMonitor.swift */,
 			);
 			path = Manager;
-			sourceTree = "<group>";
-		};
-		048332A42B6A5429008E329C /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				04B8FAA82B6ACD9700478717 /* HpdImageViewerController.swift */,
-				04F0FB5B2B6B6B2400F0533F /* UIImageView+Extensions.swift */,
-				04F0FB5F2B6B734B00F0533F /* HapticFeebacl+Extension.swift */,
-				04A71B992B7257D40002E398 /* UITableView+Extension.swift */,
-			);
-			name = Extensions;
-			sourceTree = "<group>";
-		};
-		048332A52B6A542C008E329C /* Constant */ = {
-			isa = PBXGroup;
-			children = (
-				048332B12B6A54D9008E329C /* Constant.swift */,
-				04E36CC32B72A21C00723586 /* Utility.swift */,
-			);
-			path = Constant;
 			sourceTree = "<group>";
 		};
 		048332A62B6A542E008E329C /* Application */ = {
@@ -179,13 +175,13 @@
 			path = Application;
 			sourceTree = "<group>";
 		};
-		048332A72B6A5451008E329C /* Utility */ = {
+		048332A72B6A5451008E329C /* Api Utility */ = {
 			isa = PBXGroup;
 			children = (
 				048332AD2B6A5499008E329C /* EndPointType.swift */,
 				048332AF2B6A54A0008E329C /* NewsEndPointItem.swift */,
 			);
-			path = Utility;
+			path = "Api Utility";
 			sourceTree = "<group>";
 		};
 		048332A82B6A5460008E329C /* News */ = {
@@ -250,6 +246,34 @@
 			path = WebView;
 			sourceTree = "<group>";
 		};
+		04BD8F5E2F268BC10044884D /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				04BD8F5F2F268BD30044884D /* AppUtils.swift */,
+				048332B12B6A54D9008E329C /* Constant.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		04E54EB22F275D23002111D4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				04E54EB32F275D23002111D4 /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		04FE72DF2F276DA300CDEB61 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				04FE72E02F276DBA00CDEB61 /* HapticFeebacl+Extension.swift */,
+				04FE72E12F276DBA00CDEB61 /* UIImageView+Extensions.swift */,
+				04FE72E22F276DBA00CDEB61 /* UITableView+Extension.swift */,
+				04FE72E32F276DBA00CDEB61 /* UIViewController+Extension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -280,7 +304,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					048332312B6A5267008E329C = {
 						CreatedOnToolsVersion = 15.2;
@@ -329,24 +353,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04E36CC42B72A21C00723586 /* Utility.swift in Sources */,
-				048332402B6A5267008E329C /* NewsAppHarsh.xcdatamodeld in Sources */,
-				04B8FAA92B6ACD9700478717 /* HpdImageViewerController.swift in Sources */,
-				04A71B9A2B7257D40002E398 /* UITableView+Extension.swift in Sources */,
 				048332362B6A5267008E329C /* AppDelegate.swift in Sources */,
+				04FE72E42F276DBA00CDEB61 /* UITableView+Extension.swift in Sources */,
+				04FE72E52F276DBA00CDEB61 /* HapticFeebacl+Extension.swift in Sources */,
+				04FE72E62F276DBA00CDEB61 /* UIImageView+Extensions.swift in Sources */,
+				04FE72E72F276DBA00CDEB61 /* UIViewController+Extension.swift in Sources */,
 				04B8FAA72B6AA65600478717 /* NewsDetailsVC.swift in Sources */,
 				048332B62B6A5A66008E329C /* NewsHomeVC.swift in Sources */,
 				048332B02B6A54A0008E329C /* NewsEndPointItem.swift in Sources */,
 				048332B42B6A55FA008E329C /* ApiManager.swift in Sources */,
 				048332AE2B6A5499008E329C /* EndPointType.swift in Sources */,
+				04BD8F622F268C390044884D /* LoaderManager.swift in Sources */,
 				048332382B6A5267008E329C /* SceneDelegate.swift in Sources */,
-				04F0FB602B6B734B00F0533F /* HapticFeebacl+Extension.swift in Sources */,
 				048332BD2B6A5FB0008E329C /* NewsViewModel.swift in Sources */,
+				0441537D2F26AA78003DBFFC /* NewsAppHarsh.xcdatamodeld in Sources */,
+				04BD8F682F2698EA0044884D /* ImageLoader.swift in Sources */,
 				04F0FB582B6B47B400F0533F /* DBManager.swift in Sources */,
-				04F0FB5C2B6B6B2400F0533F /* UIImageView+Extensions.swift in Sources */,
+				04BD8F602F268BD40044884D /* AppUtils.swift in Sources */,
+				04E54EB82F275FF9002111D4 /* HpdImageViewer.swift in Sources */,
 				048332B22B6A54D9008E329C /* Constant.swift in Sources */,
+				04BD8F5B2F268B7E0044884D /* HapticManager.swift in Sources */,
 				048332C02B6A6FEB008E329C /* NewsTVC.swift in Sources */,
-				04F0FB5A2B6B576500F0533F /* NetworkReachability.swift in Sources */,
+				04F0FB5A2B6B576500F0533F /* NetworkMonitor.swift in Sources */,
 				04B8FAA52B6A9FFC00478717 /* WebViewVC.swift in Sources */,
 				048332B82B6A5AE2008E329C /* NewsModel.swift in Sources */,
 			);
@@ -432,6 +460,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -488,6 +517,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -498,16 +528,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4N63T7C9Y8;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NewsAppHarsh/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -515,6 +545,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.harsh.NewsAppHarsh;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -526,16 +557,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4N63T7C9Y8;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NewsAppHarsh/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -543,6 +574,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.harsh.NewsAppHarsh;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

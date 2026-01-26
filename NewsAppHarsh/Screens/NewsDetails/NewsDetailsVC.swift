@@ -4,95 +4,101 @@
 //
 //  Created by My Mac Mini on 31/01/24.
 //
-
 import UIKit
 
-class NewsDetailsVC: UIViewController {
-    
-    //MARK: -  @IBOutlet
-    @IBOutlet weak var lblTitle: UILabel!
-    @IBOutlet weak var imgNews: UIImageView!
-    @IBOutlet weak var lblDate: UILabel!
-    @IBOutlet weak var lblAuthor: UILabel!
-    @IBOutlet weak var lblDesc: UILabel!
-    @IBOutlet weak var lblContent: UILabel!
-    @IBOutlet weak var btnWebView: UIButton!
-    
-    //MARK: -  Properties
-    var article : Articles?
-    
-    
-    //MARK: -  ViewController LifeCycle
+final class NewsDetailsVC: UIViewController {
+    // MARK: - @IBOutlet
+
+    @IBOutlet private var lblTitle: UILabel!
+    @IBOutlet private var imgNews: UIImageView!
+    @IBOutlet private var lblDate: UILabel!
+    @IBOutlet private var lblAuthor: UILabel!
+    @IBOutlet private var lblDesc: UILabel!
+    @IBOutlet private var lblContent: UILabel!
+    @IBOutlet private var btnWebView: UIButton!
+
+    // MARK: - Properties
+
+    var article: Article?
+
+    // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupUI()
         configureNewsData()
-        
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = false
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+
+    private func setupUI() {
+        title = "Details"
+        view.backgroundColor = .tertiarySystemGroupedBackground
         let pictureTap = UITapGestureRecognizer(target: self, action: #selector(openImage))
-        self.imgNews.isUserInteractionEnabled = true
-        self.imgNews.addGestureRecognizer(pictureTap)
-        
+        imgNews.isUserInteractionEnabled = true
+        imgNews.addGestureRecognizer(pictureTap)
     }
-    
-    @objc func openImage(_ sender: UITapGestureRecognizer) {
-        let imageInfo = HpdImageInfo(image: imgNews.image ?? UIImage(), imageMode: .aspectFit)
-        let transitionInfo = HpdTransitionInfo(fromView: sender.view ?? UIView())
+
+    @objc private func openImage(_ sender: UITapGestureRecognizer) {
+        // 1. Ensure we have an image
+        guard let image = imgNews.image else { return }
+
+        // 2. Setup Configuration
+        // Note: Pass 'imageHD' here if you have a URL for better quality
+        let imageInfo = HpdImageInfo(image: image, imageMode: .aspectFit, imageHD: nil)
+
+        // 3. Setup Transition (From the Image View)
+        let transitionInfo = HpdTransitionInfo(fromView: imgNews)
+
+        // 4. Initialize Controller
         let imageViewer = HpdImageViewerController(imageInfo: imageInfo, transitionInfo: transitionInfo)
-        imageViewer.dismissCompletion = {
-            //print("image dissmissed")
-        }
-        present (imageViewer, animated: true)
-        
+
+        // 5. Present
+        HapticManager.shared.play(.selection)
+        present(imageViewer, animated: true)
     }
-    
-    
-    func configureNewsData(){
-        lblTitle.text = article?.title ?? ""
-        lblDesc.text = article?.myDescription ?? ""
-        
-        let outputDateString = Utility.shared.convertDateFormat(from: (article?.publishedAt ?? ""), fromFormat: "yyyy-MM-dd'T'HH:mm:ssZ", toFormat: "dd MMM, yyyy hh:mm a")
-        
-        lblDate.text = "Published on : \(outputDateString ?? "")"
-        
-        if let authorVal = article?.author,!(authorVal.isEmpty){
-            lblAuthor.text = "Published By : \(authorVal)"
-        }else{
-            lblAuthor.text = "Unknown Author"
-        }
-        
-        lblContent.text = article?.content ?? ""
-        
-        
-        if let imgVal = article?.urlToImage,!(imgVal.isEmpty){
-            //imgNews.setImage(with: imgVal)
-            self.imgNews.downloadImage(fromURL: imgVal)
-            
-        }else{
+
+    private func configureNewsData() {
+        guard let article = article else { return }
+
+        lblTitle.text = article.title
+        lblDesc.text = article.descriptionText
+        lblContent.text = article.content
+
+        let date = AppUtils.shared.format(
+            dateString: article.publishedAt ?? "",
+            from: "yyyy-MM-dd'T'HH:mm:ssZ",
+            to: "dd MMM, yyyy hh:mm a"
+        )
+        lblDate.text = "Published: \(date ?? "N/A")"
+        lblAuthor.text = "By: \(article.author ?? "Unknown")"
+
+        if let imgUrl = article.imageUrl, !imgUrl.isEmpty {
+            imgNews.downloadImage(fromURL: imgUrl)
+        } else {
             imgNews.image = UIImage(named: "placeholder")
         }
     }
-    
-    //MARK: -  Buttons Actions
-    @IBAction func btnWebViewTapped(_ sender: UIButton) {
-        
-        if NetworkReachability.shared.isNetworkAvailable() {
-            let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as! WebViewVC
-            
-            if let url = article?.url{
-                Utility.shared.lightHapticFeedBack()
-                nextVC.strNewsUrl = url
-                self.navigationController?.pushViewController(nextVC, animated: true)
-            }
+
+    @IBAction private func btnWebViewTapped(_ sender: UIButton) {
+        if NetworkMonitor.shared.isConnected {
+            guard let url = article?.articleUrl,
+                  let nextVC = storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as? WebViewVC else { return }
+
+            nextVC.strNewsUrl = url
+            HapticManager.shared.play(.light)
+            navigationController?.pushViewController(nextVC, animated: true)
         } else {
-            Utility.shared.heavyHapticFeedBack()
-            Utility.shared.showAlertHandler(title: "Oops! It seems like you're offline", message: "Please check your internet connection and try again later.", view: self) { alert in
-                self.dismiss(animated: true)
-            }
+            HapticManager.shared.play(.error)
+            showAlert(title: "Offline", message: "Internet connection required.")
         }
-        
-        
-        
     }
-    
-    
 }

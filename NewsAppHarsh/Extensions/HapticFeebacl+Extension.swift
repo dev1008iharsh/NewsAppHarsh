@@ -11,7 +11,7 @@ extension UIImpactFeedbackGenerator {
     enum ImpactStyle {
         case lightImpact, mediumImpact, heavyImpact
     }
-    
+
     convenience init(style: ImpactStyle) {
         switch style {
         case .lightImpact:
@@ -22,9 +22,9 @@ extension UIImpactFeedbackGenerator {
             self.init(style: .heavy)
         }
     }
-    
+
     func impact() {
-        self.prepare()
-        self.impactOccurred()
+        prepare()
+        impactOccurred()
     }
 }
