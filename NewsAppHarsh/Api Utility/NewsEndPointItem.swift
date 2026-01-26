@@ -27,7 +27,7 @@ extension NewsEndPointItem: EndPointType {
     var path: String {
         switch self {
         case .news:
-            return "v2/everything?q=india&pageSize=20"
+            return "v2/everything?q=india&pageSize=30"
             //https://newsapi.org/v2/everything?q=india&apiKey=467ec62e59864e5ab75a84be5287afee
             // we are passing api key in commanHeaders header bear token and it is working
         }

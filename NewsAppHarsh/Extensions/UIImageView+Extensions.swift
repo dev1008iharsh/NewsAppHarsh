@@ -7,51 +7,65 @@
 
 import Foundation
 import UIKit
+import UIKit
 
 // Runtime Association Keys
 private var imageURLKey: UInt8 = 0
 private var dataTaskKey: UInt8 = 0
 
 extension UIImageView {
-    // 1. Store current URL string to check validity later
+    
+    // Properties to track state
     private var currentURL: String? {
         get { return objc_getAssociatedObject(self, &imageURLKey) as? String }
         set { objc_setAssociatedObject(self, &imageURLKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
-
-    // 2. Store current DataTask to cancel old downloads
+    
     private var currentTask: URLSessionDataTask? {
         get { return objc_getAssociatedObject(self, &dataTaskKey) as? URLSessionDataTask }
         set { objc_setAssociatedObject(self, &dataTaskKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
-
-    // MARK: - Public Function to Call
+    
+    // MARK: - Public Functions
+    
+    // ✅ NEW: Explicit Cancel Function
+    func cancelDownload() {
+        currentTask?.cancel()
+        currentTask = nil
+    }
 
     func downloadImage(fromURL url: String, placeholder: UIImage? = UIImage(named: "placeholder")) {
-        // Step A: Cancel previous download if running (Saves Data & Fixes Flickering)
-        currentTask?.cancel()
-
-        // Step B: Set Placeholder immediately
-        image = placeholder
-
-        // Step C: Save the new URL we are asking for
-        currentURL = url
-
-        // Step D: Request Image
+        
+        // 1. Cancel active download immediately
+        cancelDownload()
+        
+        // 2. Set Placeholder & Store URL
+        self.image = placeholder
+        self.currentURL = url
+        
+        // 3. Request Image
         let task = ImageLoader.shared.loadImage(from: url) { [weak self] loadedImage in
             guard let self = self else { return }
-
-            // 🔥 CRITICAL CHECK:
-            // ઈમેજ ડાઉનલોડ થઈ ગઈ, પણ શું આ સેલ હજુ એ જ URL માંગે છે?
-            // જો સેલ રી-યુઝ થઈ ગયો હશે, તો currentURL બદલાઈ ગયો હશે.
-            if self.currentURL == url {
-                self.image = loadedImage
-            } else {
-                // print("⚠️ Ignored old image for reused cell")
+            
+            // ✅ Ensure UI update is on Main Thread
+            DispatchQueue.main.async {
+                
+                // 🔥 Critical Check: Cell URL match?
+                if self.currentURL == url {
+                    
+                    // ✅ Safety Check: Don't set NIL if download failed.
+                    // Keep the placeholder if loadedImage is nil.
+                    if let image = loadedImage {
+                        self.image = image
+                    } else {
+                        // Optional: Set an 'error' image if needed
+                        // self.image = UIImage(named: "error_image")
+                    }
+                }
             }
         }
-
-        // Step E: Save the task so we can cancel it later
-        currentTask = task
+        
+        // 4. Save Task
+        self.currentTask = task
     }
 }

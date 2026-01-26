@@ -292,6 +292,14 @@ extension NewsHomeVC: UITableViewDataSource, UITableViewDelegate {
         nextVC.article = articles[indexPath.row]
         navigationController?.pushViewController(nextVC, animated: true)
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 150
+    }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let isLastRow = indexPath.row == articles.count - 1

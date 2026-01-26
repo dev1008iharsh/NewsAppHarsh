@@ -34,7 +34,9 @@ final class NewsTVC: UITableViewCell {
         lblDateNews.text = nil
         lblAuthorNews.text = nil
         lblTitleNews.text = nil
-        imgNews.image = nil
+        
+        imgNews.cancelDownload()
+        imgNews.image = UIImage(named: "placeholder")
     }
 
     override func awakeFromNib() {
@@ -65,10 +67,11 @@ final class NewsTVC: UITableViewCell {
             to: "dd MMM, yyyy hh:mm a"
         )
 
-        // Image Loading
+        // Download Image
         if let imgUrl = article.imageUrl {
             imgNews.downloadImage(fromURL: imgUrl, placeholder: UIImage(named: "placeholder"))
         } else {
+            imgNews.cancelDownload() // Clean up if no URL
             imgNews.image = UIImage(named: "placeholder")
         }
     }
