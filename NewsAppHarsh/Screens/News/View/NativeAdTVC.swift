@@ -60,11 +60,10 @@ class NativeAdTVC: UITableViewCell {
     // MARK: - UI Setup
 
     private func setupUI() {
-        
         iconImageView.layer.cornerRadius = 5
         nativeAdView.layer.cornerRadius = 15
         mediaView.layer.cornerRadius = 10
-        
+
         // Configure basic typography and styling
         headlineLabel.font = .systemFont(ofSize: 16, weight: .bold)
         bodyLabel.font = .systemFont(ofSize: 14, weight: .regular)
@@ -124,9 +123,9 @@ class NativeAdTVC: UITableViewCell {
         nativeAdView.advertiserView = advertiserLabel
         advertiserLabel.text = nativeAd.advertiser
         advertiserLabel.isHidden = nativeAd.advertiser == nil
-      
+
         adBadgeLabel.isHidden = false
-       
+
         // 8. Star Rating
         nativeAdView.starRatingView = starRatingLabel
         // rating scale 5 હોય છે, એટલે આપણે double value string માં convert કરીએ
@@ -138,6 +137,11 @@ class NativeAdTVC: UITableViewCell {
         }
 
         nativeAdView.nativeAd = nativeAd
+
+        if let responseID = nativeAd.responseInfo.responseIdentifier {
+            print("🆔🆔🆔 Current Native Ad ID: \(responseID)")
+        }
+        //print("🌐🌐🌐 Network: \(nativeAd.responseInfo.adNetworkInfoArray)")
 
         layoutIfNeeded()
     }

@@ -16,6 +16,8 @@ final class NewsDetailsVC: UIViewController {
     @IBOutlet private var lblDesc: UILabel!
     @IBOutlet private var lblContent: UILabel!
     @IBOutlet private var btnWebView: UIButton!
+    
+    @IBOutlet var bannerContainerView: UIView!
 
     // MARK: - Properties
 
@@ -26,6 +28,7 @@ final class NewsDetailsVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupBannerInContainer()
         configureNewsData()
     }
 
@@ -45,6 +48,20 @@ final class NewsDetailsVC: UIViewController {
         let pictureTap = UITapGestureRecognizer(target: self, action: #selector(openImage))
         imgNews.isUserInteractionEnabled = true
         imgNews.addGestureRecognizer(pictureTap)
+    }
+    private func setupBannerInContainer() {
+        let bannerView = GoogleAdClassManager.shared.getProgrammaticBanner(rootVC: self)
+        bannerView.layer.backgroundColor = UIColor.clear.cgColor
+        bannerContainerView.addSubview(bannerView)
+        bannerContainerView.layer.cornerRadius = 8
+        bannerContainerView.clipsToBounds = true
+        bannerView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            bannerView.topAnchor.constraint(equalTo: bannerContainerView.topAnchor),
+            bannerView.bottomAnchor.constraint(equalTo: bannerContainerView.bottomAnchor),
+            bannerView.leadingAnchor.constraint(equalTo: bannerContainerView.leadingAnchor),
+            bannerView.trailingAnchor.constraint(equalTo: bannerContainerView.trailingAnchor),
+        ])
     }
 
     @objc private func openImage(_ sender: UITapGestureRecognizer) {

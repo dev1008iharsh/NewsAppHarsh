@@ -10,9 +10,9 @@ import GoogleMobileAds
 
 // MARK: - Feed Configuration
 struct FeedConfig {
-    static let adInterval = 3 // Show Ad after every 5 news items
+    static let adInterval = 5 // Show Ad after every 5 news items
     static let maxAdPoolSize = 15 // Stop fetching new ads after we have 15 in memory(RAM saver)
-    static let adBatchSize = 5 // Howmany ads gets from google server at a time 
+    static let adBatchSize = 3 // How many ads gets from google server at a time
 }
 
 // MARK: - Feed Mode

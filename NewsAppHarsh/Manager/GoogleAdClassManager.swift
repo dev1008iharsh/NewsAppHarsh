@@ -165,7 +165,7 @@ final class GoogleAdClassManager: NSObject, FullScreenContentDelegate, NativeAdL
     }
 
     func adLoaderDidFinishLoading(_ adLoader: AdLoader) {
-        print("ℹ️ Native Batch Finished. Total Ads in Pool: \(nativeAdPool.count)")
+        print("ℹ️❤️ Native Batch Finished. Total Ads in Pool: \(nativeAdPool.count)")
         onNativeBatchLoaded?()
     }
 

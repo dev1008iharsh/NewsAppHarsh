@@ -11,5 +11,6 @@ import UIKit
 
 enum Constant{
     static let authKey = "703c30bbb6ed4fd09a8499b2a7726b31"
+    static var detailScreenCounterAd = 0
     //static let authKey = "467ec62e59864e5ab75a84be5287afee"
 }
