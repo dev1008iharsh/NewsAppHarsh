@@ -280,10 +280,9 @@ final class NewsHomeVC: UIViewController {
 
         let cancelAction = UIAlertAction(title: "Maybe Later", style: .destructive, handler: nil)
 
-        
-        alert.addAction(cancelAction)
         alert.addAction(watchAction)
-
+        alert.addAction(cancelAction)
+         
         present(alert, animated: true)
     }
 

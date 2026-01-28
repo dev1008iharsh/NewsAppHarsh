@@ -132,9 +132,9 @@ final class NewsDetailsVC: UIViewController {
             handler: nil
         )
         
-        alert.addAction(cancelAction)
         alert.addAction(watchAction)
-        
+        alert.addAction(cancelAction)
+         
         present(alert, animated: true, completion: nil)
     }
 
