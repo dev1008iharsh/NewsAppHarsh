@@ -90,15 +90,55 @@ final class NewsDetailsVC: UIViewController {
 
     @IBAction private func btnWebViewTapped(_ sender: UIButton) {
         if NetworkMonitor.shared.isConnected {
-            guard let url = article?.articleUrl,
-                  let nextVC = storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as? WebViewVC else { return }
-
-            nextVC.strNewsUrl = url
-            HapticManager.shared.play(.light)
-            navigationController?.pushViewController(nextVC, animated: true)
+            showRewardAdAlert()
         } else {
             HapticManager.shared.play(.error)
             showAlert(title: "Offline", message: "Internet connection required.")
         }
+    }
+
+    func showRewardAdAlert() {
+        let alert = UIAlertController(
+            title: "Unlock Premium Article 🔓",
+            message: "Watch a short video to read the complete article and detailed analysis. Your support helps us provide quality journalism!",
+            preferredStyle: .alert
+        )
+
+        let watchAction = UIAlertAction(title: "Watch & Read 📰", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            self.launchRewardedAd()
+        }
+
+        let cancelAction = UIAlertAction(
+            title: "Maybe Later",
+            style: .destructive,
+            handler: nil
+        )
+
+        alert.addAction(watchAction)
+        alert.addAction(cancelAction)
+
+        present(alert, animated: true, completion: nil)
+    }
+
+    private func launchRewardedAd() {
+        GoogleAdClassManager.shared.showRewardedAd(from: self, onReward: { [weak self] in
+            guard let self = self else { return }
+            print("🎉 Reward earned! Navigating to article...")
+            self.openNewsArticle()
+        }, onAdNotReady: { [weak self] in
+            guard let self = self else { return }
+            print("⚠️ Ad not ready. Providing access to avoid negative UX.")
+            self.openNewsArticle()
+        })
+    }
+
+    private func openNewsArticle() {
+        guard let url = article?.articleUrl,
+              let nextVC = storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as? WebViewVC else { return }
+
+        nextVC.strNewsUrl = url
+        HapticManager.shared.play(.light)
+        navigationController?.pushViewController(nextVC, animated: true)
     }
 }
