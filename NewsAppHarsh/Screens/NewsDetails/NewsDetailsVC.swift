@@ -110,7 +110,7 @@ final class NewsDetailsVC: UIViewController {
             showRewardAdAlert()
         } else {
             HapticManager.shared.play(.error)
-            showAlert(title: "Offline", message: "Internet connection required.")
+            showAlert(title: "Offline mode activated", message: "Internet connection required to read full article.")
         }
     }
 
@@ -131,10 +131,10 @@ final class NewsDetailsVC: UIViewController {
             style: .destructive,
             handler: nil
         )
-
-        alert.addAction(watchAction)
+        
         alert.addAction(cancelAction)
-
+        alert.addAction(watchAction)
+        
         present(alert, animated: true, completion: nil)
     }
 

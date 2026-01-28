@@ -102,10 +102,12 @@ final class NewsHomeVC: UIViewController {
         if presentedViewController is UIAlertController { return }
 
         let alert = UIAlertController(title: "Back Online 🟢", message: "You are connected to network now. Do you want to fetch latest news?", preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
         alert.addAction(UIAlertAction(title: "Fetch", style: .default) { [weak self] _ in
             self?.refreshData()
         })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
+        
         present(alert, animated: true)
     }
 
@@ -157,6 +159,7 @@ final class NewsHomeVC: UIViewController {
                 }
             }
         } else {
+            fetchOfflineData()
             bannerContainerView.isHidden = true
             currentFeedMode = .offline
             if viewModel.articles.isEmpty { showOfflineToast() }
@@ -277,8 +280,9 @@ final class NewsHomeVC: UIViewController {
 
         let cancelAction = UIAlertAction(title: "Maybe Later", style: .destructive, handler: nil)
 
-        alert.addAction(watchAction)
+        
         alert.addAction(cancelAction)
+        alert.addAction(watchAction)
 
         present(alert, animated: true)
     }
@@ -301,16 +305,10 @@ final class NewsHomeVC: UIViewController {
 
     private func openNewsArticle() {
         guard let urlStr = selectedArticleUrl, !urlStr.isEmpty else { return }
-
-        if NetworkMonitor.shared.isConnected {
-            let nextVC = storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as! WebViewVC
-            nextVC.strNewsUrl = urlStr
-            HapticManager.shared.play(.light)
-            navigationController?.pushViewController(nextVC, animated: true)
-        } else {
-            HapticManager.shared.play(.error)
-            showOfflineToast()
-        }
+        let nextVC = storyboard?.instantiateViewController(withIdentifier: "WebViewVC") as! WebViewVC
+        nextVC.strNewsUrl = urlStr
+        HapticManager.shared.play(.light)
+        navigationController?.pushViewController(nextVC, animated: true)
     }
 }
 
@@ -334,8 +332,14 @@ extension NewsHomeVC: UITableViewDataSource, UITableViewDelegate {
             // Read Button Action -> Triggers Reward Flow
             cell.onReadButtonTapped = { [weak self] in
                 guard let self = self else { return }
-                self.selectedArticleUrl = article.articleUrl
-                self.showRewardAdAlert()
+                if NetworkMonitor.shared.isConnected {
+                    self.selectedArticleUrl = article.articleUrl
+                    self.showRewardAdAlert()
+                } else {
+                    HapticManager.shared.play(.error)
+                    showOfflineToast()
+                    showAlert(title: "Offline mode activated", message: "Internet connection required to read full article.")
+                }
             }
 
             cell.onImageTapped = { [weak self] imgView in
