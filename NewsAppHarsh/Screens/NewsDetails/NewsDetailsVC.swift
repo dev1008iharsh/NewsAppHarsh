@@ -5,6 +5,7 @@
 //  Created by My Mac Mini on 31/01/24.
 //
 import UIKit
+import GoogleMobileAds
 
 final class NewsDetailsVC: UIViewController {
     // MARK: - @IBOutlet
@@ -51,16 +52,13 @@ final class NewsDetailsVC: UIViewController {
     }
     private func setupBannerInContainer() {
         let bannerView = GoogleAdClassManager.shared.getProgrammaticBanner(rootVC: self)
-        bannerView.layer.backgroundColor = UIColor.clear.cgColor
+        bannerView.delegate = self
         bannerContainerView.addSubview(bannerView)
-        bannerContainerView.layer.cornerRadius = 8
-        bannerContainerView.clipsToBounds = true
+        bannerContainerView.clipsToBounds = false
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            bannerView.topAnchor.constraint(equalTo: bannerContainerView.topAnchor),
-            bannerView.bottomAnchor.constraint(equalTo: bannerContainerView.bottomAnchor),
-            bannerView.leadingAnchor.constraint(equalTo: bannerContainerView.leadingAnchor),
-            bannerView.trailingAnchor.constraint(equalTo: bannerContainerView.trailingAnchor),
+            bannerView.centerXAnchor.constraint(equalTo: bannerContainerView.centerXAnchor),
+            bannerView.centerYAnchor.constraint(equalTo: bannerContainerView.centerYAnchor)
         ])
     }
 
@@ -157,5 +155,37 @@ final class NewsDetailsVC: UIViewController {
         nextVC.strNewsUrl = url
         HapticManager.shared.play(.light)
         navigationController?.pushViewController(nextVC, animated: true)
+    }
+}
+extension NewsDetailsVC : BannerViewDelegate {
+    func bannerViewDidReceiveAd(_ bannerView: BannerView) {
+        bannerContainerView.isHidden = false
+
+        let adHeight = bannerView.frame.height
+
+        if let heightConstraint = bannerContainerView.constraints.first(
+            where: { $0.firstAttribute == .height }
+        ) {
+            heightConstraint.constant = adHeight
+        }
+
+        print("✅ NewsDetailsVC BannerViewDelegate : Banner Ad Loaded | Showing banner | Height: \(adHeight)")
+    }
+    
+    func bannerView(
+        _ bannerView: BannerView,
+        didFailToReceiveAdWithError error: Error
+    ) {
+        bannerContainerView.isHidden = true
+
+        print("❌ NewsDetailsVC BannerViewDelegate : Banner Ad Failed | Hiding banner | Error: \(error.localizedDescription)")
+    }
+    
+    func bannerViewDidRecordClick(_ bannerView: BannerView) {
+        print("👆 NewsDetailsVC BannerViewDelegate : Banner Ad Clicked | User tapped the banner")
+    }
+    
+    func bannerViewDidRecordImpression(_ bannerView: BannerView) {
+        print("👀 NewsDetailsVC BannerViewDelegate : Banner Ad Impression | Banner visible to user")
     }
 }

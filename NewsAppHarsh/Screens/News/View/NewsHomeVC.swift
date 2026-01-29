@@ -13,6 +13,7 @@ final class NewsHomeVC: UIViewController {
 
     @IBOutlet private var tblNewsList: UITableView!
     @IBOutlet var bannerContainerView: UIView!
+    @IBOutlet var bannerContainerHeightConstrain: NSLayoutConstraint!
 
     // MARK: - Properties
 
@@ -31,6 +32,8 @@ final class NewsHomeVC: UIViewController {
 
     // Network Tracking
     private var lastConnectionStatus: Bool?
+
+    private var bannerView: BannerView?
 
     // MARK: - Lifecycle
 
@@ -63,21 +66,22 @@ final class NewsHomeVC: UIViewController {
     }
 
     private func setupBannerInContainer() {
-        let bannerView = GoogleAdClassManager.shared.getProgrammaticBanner(rootVC: self)
-        bannerView.backgroundColor = .clear
+        let banner = GoogleAdClassManager.shared.getProgrammaticBanner(rootVC: self)
+        banner.delegate = self
+        banner.clipsToBounds = false
+        
+        bannerView = banner
+        bannerContainerView.addSubview(banner)
+        bannerContainerView.clipsToBounds = false
+        banner.translatesAutoresizingMaskIntoConstraints = false
 
-        bannerContainerView.addSubview(bannerView)
-        bannerContainerView.layer.cornerRadius = 8
-        bannerContainerView.clipsToBounds = true
-
-        bannerView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            bannerView.topAnchor.constraint(equalTo: bannerContainerView.topAnchor),
-            bannerView.bottomAnchor.constraint(equalTo: bannerContainerView.bottomAnchor),
-            bannerView.leadingAnchor.constraint(equalTo: bannerContainerView.leadingAnchor),
-            bannerView.trailingAnchor.constraint(equalTo: bannerContainerView.trailingAnchor),
+            banner.centerXAnchor.constraint(equalTo: bannerContainerView.centerXAnchor),
+            banner.centerYAnchor.constraint(equalTo: bannerContainerView.centerYAnchor),
         ])
+        print("📦 Banner Setup | BannerView added to container")
     }
+    
 
     // MARK: - Network Observer
 
@@ -102,12 +106,12 @@ final class NewsHomeVC: UIViewController {
         if presentedViewController is UIAlertController { return }
 
         let alert = UIAlertController(title: "Back Online 🟢", message: "You are connected to network now. Do you want to fetch latest news?", preferredStyle: .alert)
-        
+
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive))
         alert.addAction(UIAlertAction(title: "Fetch", style: .default) { [weak self] _ in
             self?.refreshData()
         })
-        
+
         present(alert, animated: true)
     }
 
@@ -142,6 +146,7 @@ final class NewsHomeVC: UIViewController {
 
     private func loadFreshData() {
         // Prevent duplicate calls if already loading
+        LoaderManager.shared.startLoader(message: "Fetching latest news...")
         if isLoading { return }
 
         if NetworkMonitor.shared.isConnected {
@@ -200,12 +205,13 @@ final class NewsHomeVC: UIViewController {
     private func handleViewModelEvent(_ event: NewsViewModel.Event) {
         switch event {
         case .loading:
+            print("handleViewModelEvent : loading")
             // isLoading is already set to true in loadFreshData/willDisplay
             // Just handle UI here
-            if viewModel.articles.isEmpty {
+            /* if viewModel.articles.isEmpty {
                 LoaderManager.shared.startLoader(message: "Fetching latest news...")
             }
-            /* NO needed here because we are showing loader in willDisplayCell... it was not showing immediately because we are loading ad first after that loading api data
+           NO needed here because we are showing loader in willDisplayCell... it was not showing immediately because we are loading ad first after that loading api data
 
             else if currentPage > 1 {
                 tblNewsList.showBottomLoader()
@@ -282,7 +288,7 @@ final class NewsHomeVC: UIViewController {
 
         alert.addAction(watchAction)
         alert.addAction(cancelAction)
-         
+
         present(alert, animated: true)
     }
 
@@ -409,5 +415,54 @@ extension NewsHomeVC: UITableViewDataSource, UITableViewDelegate {
                 currentPage -= 1 // Revert page increment as load failed
             }
         }
+    }
+}
+
+extension NewsHomeVC: BannerViewDelegate {
+    func bannerViewDidReceiveAd(_ bannerView: BannerView) {
+        bannerContainerView.isHidden = false
+
+        let adHeight = bannerView.frame.height
+        
+        bannerContainerHeightConstrain.constant = adHeight
+        print("✅ NewsHomeVC BannerViewDelegate : Banner Ad Loaded | Showing banner | Height: \(adHeight)")
+    }
+
+    func bannerView(
+        _ bannerView: BannerView,
+        didFailToReceiveAdWithError error: Error
+    ) {
+        bannerContainerView.isHidden = true
+
+        print("❌ NewsHomeVC BannerViewDelegate : Banner Ad Failed | Hiding banner | Error: \(error.localizedDescription)")
+    }
+
+    func bannerViewDidRecordClick(_ bannerView: BannerView) {
+        print("👆 NewsHomeVC BannerViewDelegate : Banner Ad Clicked | User tapped the banner")
+    }
+
+    func bannerViewDidRecordImpression(_ bannerView: BannerView) {
+        print("👀 NewsHomeVC BannerViewDelegate : Banner Ad Impression | Banner visible to user")
+    }
+
+    override func viewWillTransition(
+        to size: CGSize,
+        with coordinator: UIViewControllerTransitionCoordinator
+    ) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        coordinator.animate(alongsideTransition: { _ in
+            guard
+                let bannerView = self.bannerView
+            else { return }
+
+            // Update banner size with new width after rotation
+            GoogleAdClassManager.shared.updateBannerSize(
+                for: bannerView,
+                size: size
+            )
+
+            print("🔄 Rotation | Banner width updated to \(size.width)")
+        })
     }
 }

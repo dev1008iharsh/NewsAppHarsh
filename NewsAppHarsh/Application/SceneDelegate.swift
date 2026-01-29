@@ -19,8 +19,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
-            NetworkMonitor.shared.stopMonitoring()
-        }
+        NetworkMonitor.shared.stopMonitoring()
+    }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -30,11 +30,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Step 2: Request Permission FIRST
             self.requestTrackingPermission {
                 // Step 3: ONLY after permission logic is done, try to show the Ad
-                print("🔄 Permission flow finished. Now trying to show App Open Ad.")
+                print("🔄 App Tracking Permission flow finished. Now trying to show App Open Ad.")
                 GoogleAdClassManager.shared.showAppOpenAdIfAvailable(scene: windowScene)
             }
         }
     }
+
     // MARK: - App Tracking Transparency (ATT) Logic
 
     /// Requests ATT permission and runs the `completion` block when done.
@@ -66,7 +67,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             completion()
         }
     }
-
 
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.

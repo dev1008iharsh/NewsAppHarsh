@@ -16,9 +16,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         NetworkMonitor.shared.startMonitoring()
-        _ = GoogleAdClassManager.shared
-        // Override point for customization after application launch.
+        
         print("** CoreDatabase Path :", URL.documentsDirectory)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            _ = GoogleAdClassManager.shared
+        }
         return true
     }
 

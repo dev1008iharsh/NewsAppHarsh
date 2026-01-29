@@ -5,9 +5,7 @@
 //  Created by My Mac Mini on 01/02/24.
 //
 
-import Foundation
 import Network
-import SystemConfiguration
 
 final class NetworkMonitor {
     static let shared = NetworkMonitor()
@@ -15,7 +13,10 @@ final class NetworkMonitor {
     private let monitor: NWPathMonitor
     private let queue = DispatchQueue(label: "NetworkMonitorQueue")
 
-    // Callback to notify listeners (UI) about status changes
+    // Prevent duplicate start
+    private var isMonitoringStarted = false
+
+    // Callback to notify listeners
     var onStatusChange: ((Bool) -> Void)?
 
     private(set) var isConnected: Bool = false
@@ -30,30 +31,27 @@ final class NetworkMonitor {
     }
 
     func startMonitoring() {
+        guard !isMonitoringStarted else { return }
+        isMonitoringStarted = true
+
         monitor.pathUpdateHandler = { [weak self] path in
             guard let self = self else { return }
 
-            let newStatus = (path.status == .satisfied)
-            
-            // Update connection type
+            let newStatus = path.status == .satisfied
             self.getConnectionType(path)
-
-            // Only notify if status actually changed or specifically needed
-            // But usually, we just update state and notify.
             self.isConnected = newStatus
-            
-            // Notify listeners on Main Thread (since UI will likely update)
-            DispatchQueue.main.async {
-                self.onStatusChange?(self.isConnected)
-            }
 
-            print("🌐 Network Status: \(self.isConnected ? "Connected" : "Disconnected")")
+            DispatchQueue.main.async {
+                self.onStatusChange?(newStatus)
+            }
         }
+
         monitor.start(queue: queue)
     }
 
     func stopMonitoring() {
         monitor.cancel()
+        isMonitoringStarted = false
     }
 
     private func getConnectionType(_ path: NWPath) {

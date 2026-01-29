@@ -554,10 +554,11 @@
 				DEVELOPMENT_TEAM = 87M7TK5K4U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NewsAppHarsh/Info.plist;
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "This helps us show you ads that are relevant to your interests rather than random content.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -584,10 +585,11 @@
 				DEVELOPMENT_TEAM = 87M7TK5K4U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = NewsAppHarsh/Info.plist;
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "This helps us show you ads that are relevant to your interests rather than random content.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
