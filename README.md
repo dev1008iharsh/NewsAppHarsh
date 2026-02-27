@@ -2,7 +2,8 @@
 
 # 📰 HarshNewsApp — Offline-First News Reader (UIKit • MVVM • Core Data)
 
-![abc](https://github.com/dev1008iharsh/NewsAppHarsh/assets/155307551/c8dc65fa-827f-4c7e-992d-521562357785)
+ <img width="814" height="443" alt="Screenshot 2026-02-27 at 2 26 38 PM" src="https://github.com/user-attachments/assets/44d9155d-ec3d-4294-a152-321692e7a99f" />
+
 
 ## 🚀 Overview
 
