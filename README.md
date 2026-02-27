@@ -1,116 +1,151 @@
+
+
+# 📰 HarshNewsApp — Offline-First News Reader (UIKit • MVVM • Core Data)
+
 ![abc](https://github.com/dev1008iharsh/NewsAppHarsh/assets/155307551/c8dc65fa-827f-4c7e-992d-521562357785)
 
-Topics I used i this App:
-1.Fetching Data from API using URLSession
-2.MVVM Architecture:
-3.Offline Functionality with Core Data
-4. No Third-Party Libraries
-5. To name but a few
+## 🚀 Overview
 
-Stay informed and connected with the latest news from around the globe with HarshNewsApp, a sleek and intuitive news app designed to bring the world to your fingertips. Whether you're a news enthusiast or just looking to stay up-to-date, HarshNewsApp has you covered with its user-friendly interface and powerful features.(https://newsapi.org - for getting news from server)
+HarshNewsApp is a production-grade native iOS news application designed with modern architecture, high performance, and offline reliability in mind.  
+It delivers real-time global news while remaining fully usable without internet connectivity.
 
-1.Stay Updated Anytime, Anywhere:
-HarshNewsApp fetches the latest news articles from top sources across the internet, ensuring you're always in the know about current events, trending topics, and breaking news. With just a tap, dive into a world of information right from your iPhone.
+Built entirely using **Swift + UIKit** with **no third-party libraries**, this project demonstrates clean engineering practices suitable for real-world large-scale apps.
 
-2.Seamless Offline Access:
-Even when you're offline or experiencing connectivity issues, HarshNewsApp keeps you connected to the news you love. Thanks to its innovative offline functionality, the app seamlessly stores previously viewed articles on your device using cutting-edge technology, allowing you to access and read them whenever and wherever you are, without missing a beat.
+---
 
-3.Elegant Design, Effortless Navigation:
-Experience the news in style with HarshNewsApp's elegant and intuitive design. Effortlessly navigate through articles, swipe between categories, and discover new topics with ease. Whether you're browsing the latest headlines or delving into specific topics of interest, HarshNewsApp offers a smooth and enjoyable reading experience tailored to your preferences.
+## ✨ Key Features
 
-4. No Fuss, No Frills – Just News:
-HarshNewsApp prides itself on simplicity and reliability. With no intrusive ads or distractions, the focus remains squarely on delivering high-quality news content that informs, inspires, and engages you every step of the way.
-Experience the power of knowledge with HarshNewsApp – your trusted companion for all things news-related. Explorer now and Read millions worldwide news and stay informed, connected, and inspired, one headline at a time.
+- 🌐 Fetches latest headlines from global sources via NewsAPI  
+- 📴 Offline-first experience using Core Data local persistence  
+- 🔄 Silent background sync with automatic UI refresh  
+- 🧭 Smooth navigation with clean UIKit design  
+- 🖼️ Full article view using WebKit with loading progress  
+- ⚡ Fast scrolling with advanced image caching  
+- 📄 Pagination with request cancellation  
+- 🌙 Adaptive Light / Dark mode support  
 
-🔥 What’s New in This Update (Big Refactor + Modern iOS Standards) 🛠️⚡
+---
 
-🧩 System & Compatibility Upgrade
-	•	✅ Minimum iOS Target: iOS 17 📌
-	•	✅ Fully Compatible with iOS 26 🧊✨ (Liquid Glass design vibe ready!)
-	•	✅ Swift 6 Strict Concurrency compliant 🧠⚙️
-	•	✅ Fixed Sendable warnings across Singleton classes 🛡️
+## 🧠 Architecture & Engineering
 
-  🗄️ Core Data (DBManager) — Fully Refactored & Thread-Safe 💾🔒
-	•	🔁 DBManager હવે self-contained છે (AppDelegate dependency removed) 🧹
-	•	🧵 Thread-safe Core Data stack + Sendable ready ✅
-	•	🚫 Removed lazy var persistentContainer to avoid Swift 6 race condition issues ⚠️
-	•	⚡ All write operations (save/delete) background માં performBackgroundTask વડે 🏎️
-	•	🧠 deleteAllData માં completion handler add કરીને sequence fix:
-Delete ➝ Save ➝ Refresh UI ✅ (No UI freeze / no data race) 🧊
+- 🧩 **MVVM Architecture** with clear separation of concerns  
+- 💾 **Single Source of Truth** using local database  
+- 🧵 Swift 6 strict concurrency compliance  
+- 🔒 Thread-safe Core Data stack  
+- 🧠 Equatable models to prevent unnecessary DB writes  
+- 📱 MainActor-safe UI updates  
 
-🏗️ Offline-First + Single Source of Truth Architecture 📚✅
+---
 
-New Flow:
-📥 Load Offline Data ➝ 🌐 Silent Background API Fetch ➝ 💾 Update DB ➝ 🔄 Refresh UI
-	•	🟰 Article model Equatable add 
-	•	🧠 Smart optimization:
-API data == Local DB data ➝ DB write skip 🚫💾 (Battery + performance saver 🔋⚡)
-	•	🎯 MainActor warnings fix કરીને UI updates always on Main Thread 🧵📱
+## 💾 Offline-First Data Flow
 
-  🖼️ Image Loading & Multi-Layer Caching (No Flicker!) ✨📸
-	•	🔥 Fixed cell reuse image flickering issue 🧊
-	•	loadImage()  URLSessionDataTask  (task cancel support) ⛔️
-	•	UIImageView extension with Associated Objects:
-	•	current URL track 🔗
-	•	old task cancel  જ્યારે cell reuse ♻️
-	•	🧠 Memory + Disk caching = super fast scrolling ⚡🧠
+- ⚡ Works without internet  
+- 🔋 Saves battery and bandwidth  
+- 📚 Ensures consistent user experience  
 
-  🧿 New UI Components & UX Enhancements 🎨😍
+---
 
-🖼️ HpdImageViewer (Full Screen HD Viewer)
-	•	📌 Single file refactor
-	•	⚡ async/await HD loading
-	•	❌ Top-right Close (X) button for clean UX
+## 🗄️ Core Data Implementation
 
+- 🔒 Fully thread-safe DB manager  
+- 🧵 Background write operations using `performBackgroundTask`  
+- 🚫 Removed AppDelegate dependency  
+- ⚡ Race-condition safe for Swift 6  
 
-  🌐 WebViewVC Improvements
-	•	🛠️ Fixed NSInvalidUnarchiveOperationException (WebKit linking fix) ✅
-	•	📊 Added UIProgressView with KVO loading progress
-	•	🏷️ Navigation title auto sync with webpage title
+---
 
+## 🖼️ Image Handling & Performance
 
-  ⏳ LoaderManager Upgrade
-	•	✅ Updated to @MainActor
-	•	🌫️ Removed full-screen dimming background
-	•	🎯 Transparent + center HUD (cleaner look)
-	•	📝 Multi-line message support + auto-scaling font
+- 🧠 Multi-layer caching (Memory + Disk)  
+- ⛔️ URLSession task cancellation on cell reuse  
+- ✨ No image flickering during fast scroll  
+- 🔗 URL tracking via Associated Objects  
 
+---
 
-  🧭 Navigation & UI Logic Cleanup 🧼✨
-	•	🏠 Large Titles only on Home screen
-	•	🔙 Other screens = normal titles (more professional feel) 🎯
+## 🌐 Networking Layer
 
+- 📡 URLSession-based API integration  
+- ❌ No third-party networking libraries  
+- ⛔️ Cancelable requests for performance  
+- 📄 Efficient pagination (15 items per page)  
+- 🧠 Duplicate request prevention  
 
-  🧠 Cell Interaction Refactor (Modern UIKit Style) 📲✅
-	•	🚫 Removed old sender.tag pattern
-	•	✅ Implemented Closures / Callbacks for:
-	•	📌 Read More tap
-	•	🖼️ Image tap
-	•	🔗 Navigation now uses direct URL strings (no tag dependency)
+---
 
+## 🎨 UI & UX Enhancements
 
-  🚀 Networking + Pagination Optimized ⚡📡
-	•	📴 NetworkMonitor improved:
-	•	No unnecessary alert on app launch
-	•	Correct offline/online alert handling
-	•	🧠 ApiManager returns URLSessionDataTask (cancelable requests)
-	•	🏎️ NewsViewModel cancels previous tasks during fast scrolling
-	•	📄 Pagination improved:
-	•	isLoading flag to prevent duplicate calls
-	•	Fetches 15 records per page ✅
+- 📖 Large titles on Home screen only  
+- 🖥️ Professional navigation behavior  
+- 🖼️ Full-screen HD image viewer  
+- 📊 WebView progress tracking  
+- ⏳ Clean loader HUD with transparent background  
+- 📲 Closure-based cell interactions (modern UIKit style)  
 
+---
 
-  🧰 Topics / Tech Used in This App 🧠🛠️
-	•	✅ URLSession Networking 🌐
-	•	✅ MVVM Architecture 🧩
-	•	✅ Offline-First with Core Data 💾
-	•	✅ Thread-Safe Core Data + Swift 6 Concurrency 🧵
-	•	✅ Image Caching (Memory + Disk) 🖼️⚡
-	•	✅ No Third-Party Libraries 🚫📦
+## 💰 Ads Showcase (All Major Formats)
 
+This app demonstrates integration of **Google Mobile Ads (AdMob)**:
 
-  🌟 Why You’ll Love HarshNewsApp 💙📰
+- 📌 Banner Ads  
+- 📌 Interstitial Ads  
+- 📌 Rewarded Ads  
+- 📌 Native Ads  
+- 📌 App Open Ads  
 
-✨ Clean UI • ⚡ Fast scrolling • 📴 Offline access • 🧠 Smart caching • 🔒 Safe concurrency • 📱 iOS 26 ready
+All formats implemented with smooth, non-blocking presentation.
 
+---
+
+## 🛠️ Technical Topics Covered
+
+- 🌐 API Networking using URLSession  
+- 🧩 MVVM Architecture  
+- 💾 Offline Storage with Core Data  
+- 🧵 Swift Concurrency (async/await ready)  
+- 🖼️ Image Caching System  
+- 📄 Pagination & Request Management  
+- 🔔 Background Tasks  
+- 🚫 No Third-Party Libraries  
+
+---
+
+## 🔥 Platform & Compatibility
+
+- 📱 Minimum Target: **iOS 17+**  
+- 🧠 Swift 6 Ready  
+- ✨ Compatible with modern iOS UI standards  
+
+---
+
+## 🌍 Data Source
+
+- 📰 NewsAPI — https://newsapi.org  
+
+---
+
+## 👨‍💻 Developer
+
+**Harsh Darji — Senior iOS Engineer (5+ yrs)**  
+
+📧 dev.iharsh1008@gmail.com  
+📱 +91 9662108047  
+
+🌐 Portfolio: https://dev1008iharsh.github.io/  
+💼 LinkedIn: https://www.linkedin.com/in/dev1008iharsh/  
+🐙 GitHub: https://github.com/dev1008iharsh  
+
+---
+
+## ⭐ Highlights
+
+- ⚡ Production-ready architecture  
+- 🧠 Clean, maintainable codebase  
+- 📴 Reliable offline experience  
+- 🚀 Optimized for real-world scale  
+
+---
+
+⭐ If you find this project useful, consider giving it a star!
 
