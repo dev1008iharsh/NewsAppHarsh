@@ -12,6 +12,7 @@ It delivers real-time global news while remaining fully usable without internet 
 
 Built entirely using **Swift + UIKit** with **no third-party libraries**, this project demonstrates clean engineering practices suitable for real-world large-scale apps.
 
+Youtube Link Preview of app : https://youtube.com/shorts/yUwI25HZ_aI
 ---
 
 ## ✨ Key Features
